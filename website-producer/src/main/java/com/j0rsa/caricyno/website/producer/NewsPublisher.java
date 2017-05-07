@@ -6,4 +6,5 @@ package com.j0rsa.caricyno.website.producer;
  */
 
 public class NewsPublisher {
+    
 }
