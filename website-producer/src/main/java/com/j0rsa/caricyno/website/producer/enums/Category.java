@@ -14,4 +14,9 @@ public enum Category {
     Category(int id) {
         categoryId = id;
     }
+
+
+    public int getCategoryId() {
+        return categoryId;
+    }
 }

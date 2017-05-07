@@ -17,7 +17,7 @@ public class NewsObject {
     private String title;
     private Category category;
     private URL mainPhoto;
-    private String text;
+    private String htmlText;
     private boolean visibleInSearchEngines;
     private List<String> tags;
     private ArticleRights visibility;
