@@ -1,19 +1,19 @@
 package com.j0rsa.caricyno.vk.query;
 
+import com.j0rsa.caricyno.vk.actor.ServiceActorData;
 import com.vk.api.sdk.queries.wall.WallGetQuery;
 
 import static com.j0rsa.caricyno.vk.AppConfig.vk;
-import static com.j0rsa.caricyno.vk.actor.ServiceActorData.service;
 
 public class WallQuery {
     private WallGetQuery wallGetQuery;
 
-    private WallQuery() {
-        wallGetQuery = vk().wall().get(service().actor());
+    private WallQuery(ServiceActorData service) {
+        wallGetQuery = vk().wall().get(service.actor());
     }
 
-    public static WallQuery wall() {
-        return new WallQuery();
+    public static WallQuery wall(ServiceActorData service) {
+        return new WallQuery(service);
     }
 
     public WallGetQuery query() {

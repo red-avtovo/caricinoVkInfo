@@ -12,16 +12,25 @@
     <modules>
         <module>vk-consumer</module>
         <module>website-producer</module>
+        <module>caricyno</module>
     </modules>
 
     <properties>
         <java.version>1.8</java.version>
     </properties>
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.3.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
@@ -56,6 +65,7 @@
                 <artifactId>assertj-core</artifactId>
                 <version>3.4.1</version>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 

@@ -1,0 +1,5 @@
+vk:
+  group: -1
+  client: 1
+  secret: secret
+  service: service
