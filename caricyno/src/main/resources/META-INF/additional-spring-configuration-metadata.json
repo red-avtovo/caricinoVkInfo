@@ -1,0 +1,39 @@
+{
+  "properties": [
+    {
+      "name": "website.username",
+      "type": "java.lang.String",
+      "description": "Description for website.username."
+    },
+    {
+      "name": "website.url",
+      "type": "java.lang.String",
+      "description": "Description for website.url."
+    },
+    {
+      "name": "vk.group",
+      "type": "java.lang.String",
+      "description": "Description for vk.group."
+    },
+    {
+      "name": "vk.client",
+      "type": "java.lang.String",
+      "description": "Description for vk.client."
+    },
+    {
+      "name": "vk.secret",
+      "type": "java.lang.String",
+      "description": "Description for vk.secret."
+    },
+    {
+      "name": "vk.service",
+      "type": "java.lang.String",
+      "description": "Description for vk.service."
+    },
+    {
+      "name": "website.password",
+      "type": "java.lang.String",
+      "description": "Description for website.password."
+    }
+  ]
+}

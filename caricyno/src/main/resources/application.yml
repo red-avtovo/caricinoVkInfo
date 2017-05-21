@@ -3,3 +3,7 @@ vk:
   client: 1
   secret: secret
   service: service
+website:
+  url: http://odnodolshiki2.ru
+  username: <user>
+  password: <pass>

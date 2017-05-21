@@ -1,8 +1,13 @@
 package com.j0rsa.caricyno.website.producer;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,23 +18,44 @@ import java.util.List;
  * @since 07.05.17
  */
 
+@Service
 public class NewsPublisher {
-    private static String websiteOrigin = "http://odnodolshiki2.ru";
-    private static String articleAddUrl = websiteOrigin + "/articles/add";
+    private final WebsiteProperties properties;
+    private final AuthorizationModule authorizationModule;
+    private final String articleAddUrl;
+
+    private String authCookie = "";
+
+    @Autowired
+    public NewsPublisher(WebsiteProperties properties, AuthorizationModule authorizationModule) {
+        this.properties = properties;
+        this.authorizationModule = authorizationModule;
+        this.articleAddUrl = properties.getUrl() + "/articles/add";
+    }
 
     public boolean publish(NewsObject newsObject) throws IOException {
+        checkAuthorization();
         final List<NameValuePair> formParams = makeFormParams(newsObject);
-        return Request.Post(articleAddUrl)
+        final Request request = Request.Post(articleAddUrl)
                 .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
-                .addHeader("Origin", websiteOrigin)
+                .addHeader("Origin", properties.getUrl())
                 .addHeader("Referer", articleAddUrl)
                 .addHeader("Upgrade-Insecure-Requests", "1")
-                .bodyForm(formParams)
-                .execute()
-        .returnResponse()
+                .bodyForm(formParams);
+        Executor executor = Executor.newInstance();
+        final BasicCookieStore cookieStore = new BasicCookieStore();
+        cookieStore.addCookie(new BasicClientCookie("PHPSESSID", authCookie));
+        return executor.use(cookieStore)
+                .execute(request)
+                .returnResponse()
                 .getStatusLine()
                 .getStatusCode() == 200;
+    }
 
+    private void checkAuthorization() throws IOException {
+        if (authCookie==null || !authorizationModule.isAuthorized(authCookie)) {
+            authCookie = authorizationModule.authorize();
+        }
     }
 
     private ArrayList<NameValuePair> makeFormParams(NewsObject newsObject) {
