@@ -9,10 +9,18 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class NewsService {
+    private final WallNews wallNews;
+
     @Autowired
-    private WallNews wallNews;
+    public NewsService(WallNews wallNews) {
+        this.wallNews = wallNews;
+    }
 
     public GetResponse getData() throws ClientException, ApiException {
         return wallNews.getLastOwnerRecord();
+    }
+
+    public GetResponse findLastPosts(Integer count) throws ClientException, ApiException {
+        return wallNews.findLastPosts(count);
     }
 }

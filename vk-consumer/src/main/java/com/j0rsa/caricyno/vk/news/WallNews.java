@@ -13,15 +13,31 @@ import static com.vk.api.sdk.queries.wall.WallGetFilter.OWNER;
 
 @Service
 public class WallNews extends News {
+    private final VkProperties vkProperties;
+
     @Autowired
-    private VkProperties vkProperties;
+    public WallNews(VkProperties vkProperties) {
+        this.vkProperties = vkProperties;
+    }
 
     public GetResponse getLastOwnerRecord() throws ClientException, ApiException {
+        return ownersWallPosts()
+                .count(1)
+                .build()
+                .execute();
+    }
+
+    private WallRequest.WallRequestBuilder ownersWallPosts() {
         return WallRequest.builder()
                 .service(service(vkProperties))
                 .owner(vkProperties.getGroup())
-                .filter(OWNER)
-                .count(1)
+                .filter(OWNER);
+    }
+
+    @Override
+    public GetResponse findLastPosts(Integer count) throws ClientException, ApiException {
+        return ownersWallPosts()
+                .count(count)
                 .build()
                 .execute();
     }
