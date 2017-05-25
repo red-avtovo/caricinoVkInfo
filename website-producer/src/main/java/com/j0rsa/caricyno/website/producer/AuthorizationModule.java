@@ -1,6 +1,7 @@
 package com.j0rsa.caricyno.website.producer;
 
 import org.apache.http.Header;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Form;
 import org.apache.http.client.fluent.Request;
@@ -66,18 +67,13 @@ public class AuthorizationModule {
                 .setSSLContext(sslContext)
                 .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
                 .build();
-        authCheckRequest = Request.Post(authCheckUrl)
-                .addHeader("Accept", "application/json")
-                .addHeader("Origin", properties.getUrl())
-                .addHeader("Referer", authCheckUrl)
-                .addHeader("X-Request", "JSON")
-                .addHeader("X-Requested-With", "XMLHttpRequest");
+        authCheckRequest = Request.Post(authCheckUrl);
     }
 
     public String authorize() throws IOException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
         final String phpsessid = getConnectedClientSessionId();
         final Executor executor = getExecutorWithPhpSessionCookie(phpsessid);
-        executor.execute(authRequest);
+        executor.execute(authRequest).discardContent();
         return phpsessid;
     }
 
@@ -105,15 +101,19 @@ public class AuthorizationModule {
 
     public boolean isAuthorized(String authCookieString) throws IOException {
         final Executor executorWithPhpSessionCookie = getExecutorWithPhpSessionCookie(authCookieString);
-        return executorWithPhpSessionCookie
+        final HttpResponse authResponse = executorWithPhpSessionCookie
                 .execute(authCheckRequest)
-                .returnResponse()
+                .returnResponse();
+        final int statusCode = authResponse
                 .getStatusLine()
-                .getStatusCode() == 200;
+                .getStatusCode();
+        if (statusCode == 200) return true;
+        if (statusCode == 403) return false;
+        throw new IllegalStateException("Unexpected return code: " + statusCode);
     }
 
     private Executor getExecutorWithPhpSessionCookie(String authCookieString) {
-        final Executor executor = Executor.newInstance();
+        final Executor executor = Executor.newInstance(closeableHttpClient);
         final BasicCookieStore cookieStore = initCookieStoreWithPhpSessId(authCookieString);
         return executor.use(cookieStore);
     }
