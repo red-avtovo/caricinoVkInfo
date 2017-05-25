@@ -4,6 +4,7 @@ vk:
   secret: secret
   service: service
 website:
+  domain: odnodolshiki2.ru
   url: http://odnodolshiki2.ru
   username: <user>
   password: <pass>

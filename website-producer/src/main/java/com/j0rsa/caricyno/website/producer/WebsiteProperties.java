@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "website")
 @Data
 public class WebsiteProperties {
+    private String domain;
     private String url;
     private String username;
     private String password;

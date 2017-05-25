@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,8 +36,8 @@ public class NewsPublisher {
         this.articleAddUrl = properties.getUrl() + "/articles/add";
     }
 
-    public boolean publish(NewsObject newsObject) throws IOException {
-        checkAuthorization();
+    public boolean publish(NewsObject newsObject) throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        authorizeIfNotAuthorized();
         final List<NameValuePair> formParams = makeFormParams(newsObject);
         final Request request = Request.Post(articleAddUrl)
                 .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
@@ -52,7 +55,7 @@ public class NewsPublisher {
                 .getStatusCode() == 200;
     }
 
-    private void checkAuthorization() throws IOException {
+    private void authorizeIfNotAuthorized() throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         if (authCookie==null || !authorizationModule.isAuthorized(authCookie)) {
             authCookie = authorizationModule.authorize();
         }
