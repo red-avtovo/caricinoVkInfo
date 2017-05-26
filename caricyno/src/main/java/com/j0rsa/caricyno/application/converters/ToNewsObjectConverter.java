@@ -21,7 +21,7 @@ public class ToNewsObjectConverter implements Converter<Post, NewsObject> {
     @Override
     public NewsObject convert(Post post) {
         NewsObject newsObject = new NewsObject();
-        newsObject.setTitle(post.getText());
+        newsObject.setTitle(post.getTitle());
         newsObject.setHtmlText(formattedText(post));
 
         newsObject.setTags(POST_TAGS);
