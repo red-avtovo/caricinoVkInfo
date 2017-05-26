@@ -22,14 +22,17 @@ public class ToNewsObjectConverter implements Converter<Post, NewsObject> {
     public NewsObject convert(Post post) {
         NewsObject newsObject = new NewsObject();
         newsObject.setTitle(post.getText());
-        newsObject.setTags(POST_TAGS);
+        newsObject.setHtmlText(formattedText(post));
 
-        String text = String.format(TEMPLATE, post.getText());
-        newsObject.setHtmlText(text);
+        newsObject.setTags(POST_TAGS);
         newsObject.setCategory(DEFAULT_CATEGORY);
         newsObject.setVisibility(DEFAULT_ARTICLES_RIGHTS);
         newsObject.setCommentsRights(DEFAULT_COMMENT_RIGHTS);
 
         return newsObject;
+    }
+
+    private String formattedText(Post post) {
+        return String.format(TEMPLATE, post.getText());
     }
 }
