@@ -9,7 +9,7 @@ function loadPosts() {
         "/posts?count=5",
         function (data) {
             posts = data;
-            console.log(data);
+            // console.log(data);
             for (var i = 0; i < data.length; i++) {
                 postsDiv.innerHTML += "<div class='card' style='width: 20rem; float: left; margin: 5px'>\
                     <div class='card-block'>\

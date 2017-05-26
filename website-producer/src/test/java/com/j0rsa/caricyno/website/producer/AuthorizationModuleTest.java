@@ -1,5 +1,6 @@
 package com.j0rsa.caricyno.website.producer;
 
+import org.apache.http.cookie.Cookie;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +22,14 @@ public class AuthorizationModuleTest {
 
     @Test
     public void checkAuthorizeWhenAuthorized() throws Exception {
-        final String authCookie = authorizationModule.authorize();
+        final Cookie authCookie = authorizationModule.authorize();
         assertThat(authorizationModule.isAuthorized(authCookie))
                 .isTrue();
     }
 
     @Test
     public void checkAuthorizeWhenNotAuthorized() throws Exception {
-        assertThat(authorizationModule.isAuthorized("notValidAuthSession"))
+        assertThat(authorizationModule.isAuthorized(null))
                 .isFalse();
     }
 

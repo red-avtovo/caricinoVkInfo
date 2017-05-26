@@ -1,22 +1,17 @@
 package com.j0rsa.caricyno.website.producer;
 
+import com.j0rsa.caricyno.website.producer.utils.SSLExecutor;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Form;
 import org.apache.http.client.fluent.Request;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.cookie.BasicClientCookie;
-import org.apache.http.ssl.SSLContextBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
@@ -43,7 +38,6 @@ public class AuthorizationModule {
     private final Function<String, String> getPropertyValue =
             value -> value.split("=")[1];
 
-    private final CloseableHttpClient closeableHttpClient;
     private final Request authRequest;
     private final Request authCheckRequest;
 
@@ -60,30 +54,25 @@ public class AuthorizationModule {
                                 .add("email_field", "d0VNbHh4a3EyRA==")
                                 .build()
                 );
-        SSLContext sslContext = new SSLContextBuilder()
-                .loadTrustMaterial(null, (certificate, authType) -> true).build();
-        closeableHttpClient = HttpClients
-                .custom()
-                .setSSLContext(sslContext)
-                .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
-                .build();
         authCheckRequest = Request.Post(authCheckUrl);
     }
 
-    public String authorize() throws IOException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+    Cookie authorize() throws IOException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
         final String phpsessid = getConnectedClientSessionId();
         final Executor executor = getExecutorWithPhpSessionCookie(phpsessid);
         executor.execute(authRequest).discardContent();
-        return phpsessid;
+        return getPhpSessIdCookie(phpsessid);
     }
 
     private String getConnectedClientSessionId() throws IOException {
-        final CloseableHttpResponse sessionResponse =
-                closeableHttpClient.execute(new HttpGet(properties.getUrl()));
+        final HttpResponse sessionResponse =
+                SSLExecutor.getExecutor()
+                        .execute(Request.Get(properties.getUrl()))
+                        .returnResponse();
         return getPhpSessIdFromResponse(sessionResponse);
     }
 
-    private String getPhpSessIdFromResponse(CloseableHttpResponse sessionResponse) throws IllegalStateException {
+    private String getPhpSessIdFromResponse(HttpResponse sessionResponse) throws IllegalStateException {
         return Arrays.stream(sessionResponse.getAllHeaders())
                 .filter(isSetCookieHeader)
                 .filter(isHeaderValueStartsFromPhpSessId)
@@ -99,7 +88,7 @@ public class AuthorizationModule {
                 .orElseThrow(IllegalAccessError::new);
     }
 
-    public boolean isAuthorized(String authCookieString) throws IOException {
+    boolean isAuthorized(Cookie authCookieString) throws IOException {
         final Executor executorWithPhpSessionCookie = getExecutorWithPhpSessionCookie(authCookieString);
         final HttpResponse authResponse = executorWithPhpSessionCookie
                 .execute(authCheckRequest)
@@ -113,8 +102,15 @@ public class AuthorizationModule {
     }
 
     private Executor getExecutorWithPhpSessionCookie(String authCookieString) {
-        final Executor executor = Executor.newInstance(closeableHttpClient);
+        final Executor executor = SSLExecutor.getExecutor();
         final BasicCookieStore cookieStore = initCookieStoreWithPhpSessId(authCookieString);
+        return executor.use(cookieStore);
+    }
+
+    private Executor getExecutorWithPhpSessionCookie(Cookie authCookie) {
+        final Executor executor = SSLExecutor.getExecutor();
+        final BasicCookieStore cookieStore = new BasicCookieStore();
+        cookieStore.addCookie(authCookie);
         return executor.use(cookieStore);
     }
 

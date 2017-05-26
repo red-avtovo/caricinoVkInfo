@@ -28,7 +28,7 @@ public class ToNewsObjectConverter implements Converter<Post, NewsObject> {
         newsObject.setCategory(DEFAULT_CATEGORY);
         newsObject.setVisibility(DEFAULT_ARTICLES_RIGHTS);
         newsObject.setCommentsRights(DEFAULT_COMMENT_RIGHTS);
-        newsObject.setVisibleInSearchEngines(true);
+        newsObject.setVisibleInSearchEngines(false);
 
         return newsObject;
     }
