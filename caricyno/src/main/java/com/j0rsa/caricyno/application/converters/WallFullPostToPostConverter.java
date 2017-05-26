@@ -8,12 +8,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class WallFullPostToPostConverter implements Converter<WallpostFull, Post> {
 
+    public static String wrapLinks(String text) {
+        return text.replaceAll("([^ ]*://[^<>[:space:]/]+[/]*)", "<a href='$1'>$1</a>");
+    }
+
     @Override
     public Post convert(WallpostFull wallpostFull) {
         Post post = new Post();
         post.setId(wallpostFull.getId());
         post.setTitle(getTitle(wallpostFull));
-        post.setText(postText(wallpostFull));
+        post.setText(wrapLinks(postText(wallpostFull)));
         post.setAuthor(wallpostFull.getOwnerId().toString());
         post.setIsPinned(isPinned(wallpostFull));
         return post;
