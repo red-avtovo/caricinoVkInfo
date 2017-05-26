@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class WallFullPostToPostConverter implements Converter<WallpostFull, Post> {
 
     public static String wrapLinks(String text) {
-        return text.replaceAll("([^ ]*://[^<>[:space:]/]+[/]*)", "<a href='$1'>$1</a>");
+        return text.replaceAll("([http|ftp]+://[^<> ]+)", "<a href='$1'>$1</a>");
     }
 
     @Override
