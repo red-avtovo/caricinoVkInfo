@@ -15,7 +15,7 @@ public class ToNewsObjectConverter implements Converter<Post, NewsObject> {
     private static List<String> POST_TAGS = Arrays.asList("царицыно", "новости", "жкцарицыно", "достройтецарицыно", "дольщики");
     private static String TEMPLATE = "<p><span style=\"font-size: 12pt; font-family: 'times new roman', times;\">%s</span></p>";
     private static Category DEFAULT_CATEGORY = Category.OTHER;
-    private static ArticleRights DEFAULT_ARTICLES_RIGHTS = ArticleRights.EVERYONE;
+    private static ArticleRights DEFAULT_ARTICLES_RIGHTS = ArticleRights.OWNER;
     private static ArticleRights DEFAULT_COMMENT_RIGHTS = ArticleRights.EVERYONE;
 
     @Override
@@ -28,6 +28,7 @@ public class ToNewsObjectConverter implements Converter<Post, NewsObject> {
         newsObject.setCategory(DEFAULT_CATEGORY);
         newsObject.setVisibility(DEFAULT_ARTICLES_RIGHTS);
         newsObject.setCommentsRights(DEFAULT_COMMENT_RIGHTS);
+        newsObject.setVisibleInSearchEngines(true);
 
         return newsObject;
     }
