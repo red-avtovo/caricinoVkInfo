@@ -47,7 +47,10 @@ public class NewsPublisher {
                 .bodyForm(formParams);
         Executor executor = Executor.newInstance();
         final BasicCookieStore cookieStore = new BasicCookieStore();
-        cookieStore.addCookie(new BasicClientCookie("PHPSESSID", authCookie));
+        BasicClientCookie phpsessid = new BasicClientCookie("PHPSESSID", authCookie);
+        phpsessid.setDomain(properties.getDomain());
+        phpsessid.setPath("/");
+        cookieStore.addCookie(phpsessid);
         return executor.use(cookieStore)
                 .execute(request)
                 .returnResponse()
@@ -56,7 +59,7 @@ public class NewsPublisher {
     }
 
     private void authorizeIfNotAuthorized() throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        if (authCookie==null || !authorizationModule.isAuthorized(authCookie)) {
+        if (authCookie == null || !authorizationModule.isAuthorized(authCookie)) {
             authCookie = authorizationModule.authorize();
         }
     }
