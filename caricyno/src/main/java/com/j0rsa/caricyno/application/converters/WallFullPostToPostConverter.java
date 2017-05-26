@@ -15,7 +15,12 @@ public class WallFullPostToPostConverter implements Converter<WallpostFull, Post
         post.setTitle(getTitle(wallpostFull));
         post.setText(wallpostFull.getText());
         post.setAuthor(wallpostFull.getOwnerId().toString());
+        post.setIsPinned(isPinned(wallpostFull));
         return post;
+    }
+
+    private boolean isPinned(WallpostFull wallpostFull) {
+        return wallpostFull.getIsPinned() != null && wallpostFull.getIsPinned() == 1;
     }
 
     private String getTitle(WallpostFull wallpostFull) {
