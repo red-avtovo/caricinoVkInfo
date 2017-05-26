@@ -1,12 +1,10 @@
 'use strict';
 
-// tag::vars[]
 const React = require('react');
 const ReactDOM = require('react-dom');
 const client = require('./client');
-// end::vars[]
+import PostBox from './modules/postBox.js';
 
-// tag::app[]
 class App extends React.Component {
 
     constructor(props) {
@@ -15,18 +13,21 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        // client({method: 'GET', path: '/api/employees'}).done(response => {
-        //     this.setState({employees: response.entity._embedded.employees});
-        // });
+        client({method: 'GET', path: '/posts?count=5'}).done(response => {
+            this.setState({posts: response.entity});
+        });
     }
 
     render() {
         return (
-            <h1>Hello 123!</h1>
+            <div>
+                {this.state.posts.map(
+                    item => <PostBox post={item} key={item.id}/>
+                )}
+            </div>
         )
     }
 }
-// end::app[]
 
 ReactDOM.render(
     <App />,

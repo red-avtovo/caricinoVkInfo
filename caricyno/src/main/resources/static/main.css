@@ -6,3 +6,9 @@
 {
     content:'... Show details »';
 }
+
+.card {
+    width: 20rem;
+    float: left;
+    margin: 5px
+}
