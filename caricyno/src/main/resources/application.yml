@@ -1,8 +1,9 @@
 vk:
   group: -1
-  client: 1
-  secret: secret
-  service: service
+  client: -1
+  secret: -1
+  service: -1
+
 website:
   domain: odnodolshiki2.ru
   url: https://odnodolshiki2.ru

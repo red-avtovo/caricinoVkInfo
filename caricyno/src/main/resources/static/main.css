@@ -1,14 +1,18 @@
-.in.collapse+a.btn.showdetails:before
-{
-    content:'Hide details «';
-}
-.collapse+a.btn.showdetails:before
-{
-    content:'... Show details »';
+.postCard {
+    min-height: 200px;
 }
 
-.card {
-    width: 20rem;
-    float: left;
-    margin: 5px
+.ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    line-height: 16px; /* fallback */
+    max-height: 73px; /* fallback */
+    -webkit-line-clamp: 4; /* number of lines to show */
+    -webkit-box-orient: vertical;
+}
+
+.titleContainer {
+    height: 73px; /* fallback */
+    margin-top: 5px;
 }
