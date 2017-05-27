@@ -56,4 +56,9 @@ public class PostController {
     public void save(Post post) {
         postService.ignore(post);
     }
+
+    @RequestMapping(value = "/posts/new", method = RequestMethod.GET)
+    public NewsObject createNewPost() {
+        return postService.createNewPost();
+    }
 }

@@ -2,6 +2,7 @@ package com.j0rsa.caricyno.application.services;
 
 import com.j0rsa.caricyno.application.Post;
 import com.j0rsa.caricyno.db.models.PostInfo;
+import com.j0rsa.caricyno.db.models.PostInfoBuilder;
 import com.j0rsa.caricyno.db.service.PostInfoService;
 import com.j0rsa.caricyno.website.producer.NewsObject;
 import com.vk.api.sdk.objects.wall.WallpostFull;
@@ -12,6 +13,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.j0rsa.caricyno.db.models.PostInfoBuilder.aPostInfo;
+import static com.j0rsa.caricyno.website.producer.NewsObjectBuilder.aNewsObject;
 
 @Service
 public class PostService {
@@ -42,7 +46,7 @@ public class PostService {
 
     public NewsObject createPost(Post post) {
         NewsObject newsObject = conversionService.convert(post, NewsObject.class);
-        updateNewsObjectWithPostId(post, newsObject);
+        enrichIntegratedNewsObject(post.getId(), newsObject);
         return newsObject;
     }
 
@@ -50,15 +54,35 @@ public class PostService {
         postInfoService.publish(newsObject.getId());
     }
 
-    private void updateNewsObjectWithPostId(Post post, NewsObject newsObject) {
-        Long postId = savePostInfo(post);
+    public NewsObject createNewPost() {
+        NewsObject newsObject = aNewsObject()
+                .withDefaultTags()
+                .withDefaultText()
+                .withDefaultCategory()
+                .withDefaultVisibility()
+                .withDefaultCommentsRights()
+                .withDefaultVisibleInSearchEngines()
+                .buildNewsObject();
+        enrichNewNewsObject(newsObject);
+        return newsObject;
+    }
+
+    private void enrichNewNewsObject(NewsObject newsObject) {
+        updateNewsObjectWithPostId(aPostInfo().withDefaultIntegrationId(), newsObject);
+    }
+
+    private void enrichIntegratedNewsObject(Integer integrationId, NewsObject newsObject) {
+        updateNewsObjectWithPostId(aPostInfo().withIntegrationId(integrationId), newsObject);
+    }
+
+    private void updateNewsObjectWithPostId(PostInfoBuilder aPostInfo, NewsObject newsObject) {
+        Long postId = savePostInfo(aPostInfo);
         newsObject.setId(postId);
     }
 
-    private Long savePostInfo(Post post) {
-        PostInfo postInfoInfo = new PostInfo();
-        postInfoInfo.setIntegrationId(post.getId());
-        PostInfo savedInfo = postInfoService.save(postInfoInfo);
+    private Long savePostInfo(PostInfoBuilder aPostInfo) {
+        PostInfo postInfo = aPostInfo.build();
+        PostInfo savedInfo = postInfoService.save(postInfo);
         return savedInfo.getId();
     }
 
