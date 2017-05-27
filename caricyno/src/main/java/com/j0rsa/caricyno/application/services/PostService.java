@@ -14,12 +14,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class PostsService {
+public class PostService {
     private final PostInfoService postInfoService;
     private final ConversionService conversionService;
 
     @Autowired
-    public PostsService(PostInfoService postInfoService, ConversionService conversionService, NewsPublisher newsPublisher) {
+    public PostService(PostInfoService postInfoService, ConversionService conversionService, NewsPublisher newsPublisher) {
         this.postInfoService = postInfoService;
         this.conversionService = conversionService;
     }

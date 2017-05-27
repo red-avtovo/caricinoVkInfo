@@ -1,6 +1,6 @@
 package com.j0rsa.caricyno.application;
 
-import com.j0rsa.caricyno.application.services.PostsService;
+import com.j0rsa.caricyno.application.services.PostService;
 import com.j0rsa.caricyno.vk.NewsService;
 import com.j0rsa.caricyno.website.producer.NewsObject;
 import com.j0rsa.caricyno.website.producer.NewsPublisher;
@@ -21,13 +21,13 @@ import java.util.List;
 @RestController
 public class PostController {
     private final NewsService newsService;
-    private final PostsService postsService;
+    private final PostService postService;
     private final NewsPublisher newsPublisher;
 
     @Autowired
-    public PostController(NewsService newsService, PostsService postsService, NewsPublisher newsPublisher) {
+    public PostController(NewsService newsService, PostService postService, NewsPublisher newsPublisher) {
         this.newsService = newsService;
-        this.postsService = postsService;
+        this.postService = postService;
         this.newsPublisher = newsPublisher;
     }
 
@@ -38,18 +38,18 @@ public class PostController {
     @RequestMapping(value = "/posts", method = RequestMethod.GET)
     public List<Post> findLastNPosts(Integer count) throws ClientException, ApiException {
         GetResponse response = newsService.findLastPosts(count);
-        List<Post> posts = postsService.filterPublishedRecords(response.getItems());
+        List<Post> posts = postService.filterPublishedRecords(response.getItems());
         return posts;
     }
 
     @RequestMapping(value = "/posts/create", method = RequestMethod.POST)
     public NewsObject create(Post post) {
-        return postsService.createPost(post);
+        return postService.createPost(post);
     }
 
     @RequestMapping(value = "posts/save", method = RequestMethod.POST)
     public void save(NewsObject newsObject) throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException, IOException {
         newsPublisher.publish(newsObject);
-        postsService.postWasPublished(newsObject);
+        postService.postWasPublished(newsObject);
     }
 }
