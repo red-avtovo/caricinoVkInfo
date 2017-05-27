@@ -27,7 +27,7 @@ public class PostInfoServiceTest {
         postInfo.setIntegrationId(1);
 
         // when
-        PostInfo savedPostInfo = postInfoService.save(postInfo);
+        PostInfo savedPostInfo = postInfoService.saveOrUpdate(postInfo);
 
         // then
         assertThat(savedPostInfo.getId()).isNotNull();
@@ -124,6 +124,6 @@ public class PostInfoServiceTest {
     private PostInfo savePost(Integer integrationId) {
         PostInfo postInfo = new PostInfo();
         postInfo.setIntegrationId(integrationId);
-        return postInfoService.save(postInfo);
+        return postInfoService.saveOrUpdate(postInfo);
     }
 }

@@ -20,20 +20,26 @@ public class PostInfoService {
         return Optional.ofNullable(postInfoDao.findByIntegrationId(integrationId));
     }
 
-    public PostInfo save(PostInfo postInfo) {
+    public PostInfo saveOrUpdate(PostInfo postInfo) {
+        updateIfPresent(postInfo);
         postInfoDao.save(postInfo);
         return postInfo;
+    }
+
+    private void updateIfPresent(PostInfo postInfo) {
+        Optional<PostInfo> savedPostInfo = findPostInfo(postInfo.getIntegrationId());
+        savedPostInfo.ifPresent(postInfo1 -> postInfo.setId(postInfo1.getId()));
     }
 
     public PostInfo publish(Long id) {
         PostInfo postInfo = postInfoDao.findOne(id);
         postInfo.setIsPublished(true);
-        return save(postInfo);
+        return saveOrUpdate(postInfo);
     }
 
     public void ignore(Integer integrationId) {
         PostInfo postInfo = postInfoDao.findByIntegrationId(integrationId);
         postInfo.setIsIgnored(true);
-        save(postInfo);
+        saveOrUpdate(postInfo);
     }
 }

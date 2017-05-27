@@ -82,7 +82,7 @@ public class PostService {
 
     private Long savePostInfo(PostInfoBuilder aPostInfo) {
         PostInfo postInfo = aPostInfo.build();
-        PostInfo savedInfo = postInfoService.save(postInfo);
+        PostInfo savedInfo = postInfoService.saveOrUpdate(postInfo);
         return savedInfo.getId();
     }
 
