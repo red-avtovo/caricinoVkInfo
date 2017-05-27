@@ -4,7 +4,6 @@ import com.j0rsa.caricyno.application.Post;
 import com.j0rsa.caricyno.db.models.PostInfo;
 import com.j0rsa.caricyno.db.service.PostInfoService;
 import com.j0rsa.caricyno.website.producer.NewsObject;
-import com.j0rsa.caricyno.website.producer.NewsPublisher;
 import com.vk.api.sdk.objects.wall.WallpostFull;
 import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,7 @@ public class PostService {
     private final ConversionService conversionService;
 
     @Autowired
-    public PostService(PostInfoService postInfoService, ConversionService conversionService, NewsPublisher newsPublisher) {
+    public PostService(PostInfoService postInfoService, ConversionService conversionService) {
         this.postInfoService = postInfoService;
         this.conversionService = conversionService;
     }
