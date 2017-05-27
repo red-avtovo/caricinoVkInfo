@@ -34,7 +34,7 @@ public class PostInfoServiceTest {
     }
 
     @Test
-    public void whenPostIsNotSavedThenNotPosted() {
+    public void whenPostIsNotSavedThenPostInfoNotPresent() {
         // given
         Integer notSavedPostIntegrationId = 1;
 
@@ -42,8 +42,7 @@ public class PostInfoServiceTest {
         Optional<PostInfo> postInfo = postInfoService.findPostInfo(notSavedPostIntegrationId);
 
         // then
-        assertThat(postInfo).isPresent();
-        assertThat(postInfo.get().isPosted()).isFalse();
+        assertThat(postInfo).isNotPresent();
     }
 
     @Test
@@ -71,7 +70,7 @@ public class PostInfoServiceTest {
 
         // then
         assertThat(postInfo).isPresent();
-        assertThat(postInfo.get().isPosted()).isFalse();
+        assertThat(postInfo.get().isPosted()).isTrue();
     }
 
     @Test
