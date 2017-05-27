@@ -9,4 +9,6 @@ public class Post {
     private String author;
     private String text;
     private Boolean isPinned;
+    private Boolean isPosted;
+    private Boolean isIgnored;
 }

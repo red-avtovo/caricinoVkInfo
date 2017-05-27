@@ -11,6 +11,7 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PostService {
@@ -23,18 +24,20 @@ public class PostService {
         this.conversionService = conversionService;
     }
 
-    public List<Post> filterPublishedRecords(List<WallpostFull> wallposts) {
+    public List<Post> convertToPost(List<WallpostFull> wallposts) {
         List<Post> posts = Lists.newArrayList();
         for (WallpostFull wallpost : wallposts) {
-            if (isNotPosted(wallpost)) {
-                posts.add(conversionService.convert(wallpost, Post.class));
-            }
+            Post post = conversionService.convert(wallpost, Post.class);
+            enrichWithPostInfo(post);
+            posts.add(post);
         }
         return posts;
     }
 
-    private boolean isNotPosted(WallpostFull wallpost) {
-        return !postInfoService.isPosted(wallpost.getId());
+    private void enrichWithPostInfo(Post post) {
+        Optional<PostInfo> postInfo = postInfoService.findPostInfo(post.getId());
+        post.setIsPosted(isPosted(postInfo));
+        post.setIsIgnored(isIgnored(postInfo));
     }
 
     public NewsObject createPost(Post post) {
@@ -57,5 +60,17 @@ public class PostService {
         postInfoInfo.setIntegrationId(post.getId());
         PostInfo savedInfo = postInfoService.save(postInfoInfo);
         return savedInfo.getId();
+    }
+
+    private Boolean isPosted(Optional<PostInfo> postInfo) {
+        return postInfo.map(PostInfo::isPosted).orElse(false);
+    }
+
+    private Boolean isIgnored(Optional<PostInfo> postInfo) {
+        return postInfo.map(PostInfo::isPosted).orElse(false);
+    }
+
+    public void ignore(Post post) {
+        postInfoService.ignore(post.getId());
     }
 }

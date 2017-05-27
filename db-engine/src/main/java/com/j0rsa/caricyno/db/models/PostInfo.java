@@ -18,4 +18,15 @@ public class PostInfo {
 
     @NotNull
     private Boolean isPublished = false;
+
+    @NotNull
+    private Boolean isIgnored = false;
+
+    public Boolean isPosted() {
+        return isPublished;
+    }
+
+    public Boolean isIgnored() {
+        return isIgnored;
+    }
 }

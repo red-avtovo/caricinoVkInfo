@@ -38,8 +38,7 @@ public class PostController {
     @RequestMapping(value = "/posts", method = RequestMethod.GET)
     public List<Post> findLastNPosts(Integer count) throws ClientException, ApiException {
         GetResponse response = newsService.findLastPosts(count);
-        List<Post> posts = postService.filterPublishedRecords(response.getItems());
-        return posts;
+        return postService.convertToPost(response.getItems());
     }
 
     @RequestMapping(value = "/posts/create", method = RequestMethod.POST)
@@ -51,5 +50,10 @@ public class PostController {
     public void save(NewsObject newsObject) throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException, IOException {
         newsPublisher.publish(newsObject);
         postService.postWasPublished(newsObject);
+    }
+
+    @RequestMapping(value = "posts/ignore", method = RequestMethod.POST)
+    public void save(Post post) {
+        postService.ignore(post);
     }
 }

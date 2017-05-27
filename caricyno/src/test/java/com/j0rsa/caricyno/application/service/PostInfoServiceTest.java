@@ -9,6 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -37,37 +39,11 @@ public class PostInfoServiceTest {
         Integer notSavedPostIntegrationId = 1;
 
         // when
-        boolean posted = postInfoService.isPosted(notSavedPostIntegrationId);
+        Optional<PostInfo> postInfo = postInfoService.findPostInfo(notSavedPostIntegrationId);
 
         // then
-        assertThat(posted).isFalse();
-    }
-
-    @Test
-    public void whenPostIsSavedThenPosted() {
-        // given
-        Integer integrationId = 1;
-        savePost(integrationId);
-
-        // when
-        boolean posted = postInfoService.isPosted(integrationId);
-
-        // then
-        assertThat(posted).isTrue();
-    }
-
-    @Test
-    public void whenPostIsPublishedThenPosted() {
-        // given
-        Integer integrationId = 1;
-        PostInfo savedPostInfo = savePost(integrationId);
-        postInfoService.publish(savedPostInfo.getId());
-
-        // when
-        boolean posted = postInfoService.isPosted(integrationId);
-
-        // then
-        assertThat(posted).isTrue();
+        assertThat(postInfo).isPresent();
+        assertThat(postInfo.get().isPosted()).isFalse();
     }
 
     @Test
@@ -77,10 +53,73 @@ public class PostInfoServiceTest {
         savePost(integrationId);
 
         // when
-        boolean posted = postInfoService.isPosted(integrationId);
+        Optional<PostInfo> postInfo = postInfoService.findPostInfo(integrationId);
 
         // then
-        assertThat(posted).isFalse();
+        assertThat(postInfo).isPresent();
+        assertThat(postInfo.get().isPosted()).isFalse();
+    }
+
+    @Test
+    public void whenPostIsPublishedThenPosted() {
+        // given
+        Integer integrationId = 1;
+        saveAndPublish(integrationId);
+
+        // when
+        Optional<PostInfo> postInfo = postInfoService.findPostInfo(integrationId);
+
+        // then
+        assertThat(postInfo).isPresent();
+        assertThat(postInfo.get().isPosted()).isFalse();
+    }
+
+    @Test
+    public void whenPostIsSavedThenNotIgnored() {
+        // given
+        Integer integrationId = 1;
+        savePost(integrationId);
+
+        // when
+        Optional<PostInfo> postInfo = postInfoService.findPostInfo(integrationId);
+
+        // then
+        assertThat(postInfo).isPresent();
+        assertThat(postInfo.get().isIgnored()).isFalse();
+    }
+
+    @Test
+    public void whenPostIsSavedAndPublishedThenNotIgnored() {
+        // given
+        Integer integrationId = 1;
+        saveAndPublish(integrationId);
+
+        // when
+        Optional<PostInfo> postInfo = postInfoService.findPostInfo(integrationId);
+
+        // then
+        assertThat(postInfo).isPresent();
+        assertThat(postInfo.get().isIgnored()).isFalse();
+    }
+
+    @Test
+    public void whenPostIsSavedAndPublishedAndIgnoredThenIgnored() {
+        // given
+        Integer integrationId = 1;
+        saveAndPublish(integrationId);
+        postInfoService.ignore(integrationId);
+
+        // when
+        Optional<PostInfo> postInfo = postInfoService.findPostInfo(integrationId);
+
+        // then
+        assertThat(postInfo).isPresent();
+        assertThat(postInfo.get().isIgnored()).isTrue();
+    }
+
+    private void saveAndPublish(Integer integrationId) {
+        PostInfo savedPostInfo = savePost(integrationId);
+        postInfoService.publish(savedPostInfo.getId());
     }
 
     private PostInfo savePost(Integer integrationId) {
