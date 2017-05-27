@@ -48,7 +48,7 @@ public class PostController {
     }
 
     @RequestMapping(value = "posts/save", method = RequestMethod.POST)
-    public void save(NewsObject newsObject) throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException, IOException {
+    public void save(@RequestBody NewsObject newsObject) throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException, IOException {
         newsPublisher.publish(newsObject);
         postService.postWasPublished(newsObject);
     }
