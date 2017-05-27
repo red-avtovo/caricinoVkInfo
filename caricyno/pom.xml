@@ -26,6 +26,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.j0rsa.caricyno</groupId>
+            <artifactId>db-engine</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>

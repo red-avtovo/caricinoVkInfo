@@ -4,6 +4,7 @@ import com.j0rsa.caricyno.website.producer.NewsObject;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.objects.wall.responses.GetResponse;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,6 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -32,6 +32,7 @@ public class PostControllerTest {
     }
 
     @Test
+    @Ignore
     public void getLastPostFromVkAndSaveToWebsite() throws ClientException, ApiException, IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         Post lastPost = postController.findLastNPosts(1).get(0);
         NewsObject newsObject = postController.create(lastPost);

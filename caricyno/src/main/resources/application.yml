@@ -8,3 +8,19 @@ website:
   url: https://odnodolshiki2.ru
   username: <user>
   password: <pass>
+
+spring:
+  datasource:
+    url: <url>
+    username: <username>
+    password: <password>
+    testWhileIdle: true
+    validationQuery: SELECT 1
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
