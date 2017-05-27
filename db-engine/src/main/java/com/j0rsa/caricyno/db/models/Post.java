@@ -15,4 +15,7 @@ public class Post {
 
     @NotNull
     private Integer integrationId;
+
+    @NotNull
+    private Boolean isPublished = false;
 }

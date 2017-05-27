@@ -16,11 +16,17 @@ public class PostService {
 
     public boolean isPosted(Integer integrationId) {
         Post post = postDao.findByIntegrationId(integrationId);
-        return post != null;
+        return post != null && post.getIsPublished();
     }
 
     public Post save(Post post) {
         postDao.save(post);
         return post;
+    }
+
+    public Post publish(Long id) {
+        Post post = postDao.findOne(id);
+        post.setIsPublished(true);
+        return save(post);
     }
 }

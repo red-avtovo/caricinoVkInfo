@@ -56,9 +56,36 @@ public class PostServiceTest {
         assertThat(posted).isTrue();
     }
 
-    private void savePost(Integer integrationId) {
+    @Test
+    public void whenPostIsPublishedThenPosted() {
+        // given
+        Integer integrationId = 1;
+        Post savedPost = savePost(integrationId);
+        postService.publish(savedPost.getId());
+
+        // when
+        boolean posted = postService.isPosted(integrationId);
+
+        // then
+        assertThat(posted).isTrue();
+    }
+
+    @Test
+    public void whenPostIsSavedButNotPublishedThenNotPosted() {
+        // given
+        Integer integrationId = 1;
+        savePost(integrationId);
+
+        // when
+        boolean posted = postService.isPosted(integrationId);
+
+        // then
+        assertThat(posted).isFalse();
+    }
+
+    private Post savePost(Integer integrationId) {
         Post post = new Post();
         post.setIntegrationId(integrationId);
-        postService.save(post);
+        return postService.save(post);
     }
 }
