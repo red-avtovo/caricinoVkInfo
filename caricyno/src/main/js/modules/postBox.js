@@ -1,20 +1,32 @@
 'use strict';
 
 const React = require('react');
-const {Modal, Button, Col, Thumbnail, Label, Well, Collapse, ButtonToolbar} = require('react-bootstrap');
+const {Modal, Button, Col, Thumbnail, Label, Collapse, ButtonToolbar, FormGroup, ControlLabel, FormControl} = require('react-bootstrap');
+const client = require('../client');
 
 class PostBox extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {post: props.post, modal: false, fullText: false};
+        this.state = {post: props.post, modal: false, fullText: false, newsPost: {}};
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
         this.toggleFullText = this.toggleFullText.bind(this);
+        this.handleTitleChange = this.handleTitleChange.bind(this);
     }
 
     openModal() {
-        this.setState({modal: true})
+        client({
+            method: 'POST',
+            path: '/posts/create',
+            entity: this.state.post,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).done(response => {
+            this.setState({newsPost: response.entity})
+            this.setState({modal: true})
+        });
     }
 
     closeModal() {
@@ -23,6 +35,12 @@ class PostBox extends React.Component {
 
     toggleFullText() {
         this.setState({fullText: !this.state.fullText})
+    }
+
+    handleTitleChange(e) {
+        //alert(e.target.value);
+        //this.state.newsPost.title = e.target.value;
+        return true;
     }
 
     render() {
@@ -62,7 +80,17 @@ class PostBox extends React.Component {
                     <Modal.Body>
                         <h4>Create news post</h4>
                         <hr />
-
+                        <form>
+                            <FormGroup>
+                                <ControlLabel>Title</ControlLabel>
+                                <FormControl
+                                    type="text"
+                                    value={this.state.newsPost.title}
+                                    placeholder="Enter Title"
+                                    onChange={this.handleTitleChange}
+                                />
+                            </FormGroup>
+                        </form>
                         <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p>
 
 
