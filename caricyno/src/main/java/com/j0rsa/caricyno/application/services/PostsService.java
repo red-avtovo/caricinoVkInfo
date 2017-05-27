@@ -1,7 +1,8 @@
 package com.j0rsa.caricyno.application.services;
 
 import com.j0rsa.caricyno.application.Post;
-import com.j0rsa.caricyno.db.service.PostService;
+import com.j0rsa.caricyno.db.models.PostInfo;
+import com.j0rsa.caricyno.db.service.PostInfoService;
 import com.j0rsa.caricyno.website.producer.NewsObject;
 import com.j0rsa.caricyno.website.producer.NewsPublisher;
 import com.vk.api.sdk.objects.wall.WallpostFull;
@@ -14,12 +15,12 @@ import java.util.List;
 
 @Service
 public class PostsService {
-    private final PostService postService;
+    private final PostInfoService postInfoService;
     private final ConversionService conversionService;
 
     @Autowired
-    public PostsService(PostService postService, ConversionService conversionService, NewsPublisher newsPublisher) {
-        this.postService = postService;
+    public PostsService(PostInfoService postInfoService, ConversionService conversionService, NewsPublisher newsPublisher) {
+        this.postInfoService = postInfoService;
         this.conversionService = conversionService;
     }
 
@@ -34,7 +35,7 @@ public class PostsService {
     }
 
     private boolean isNotPosted(WallpostFull wallpost) {
-        return !postService.isPosted(wallpost.getId());
+        return !postInfoService.isPosted(wallpost.getId());
     }
 
     public NewsObject createPost(Post post) {
@@ -44,7 +45,7 @@ public class PostsService {
     }
 
     public void postWasPublished(NewsObject newsObject) {
-        postService.publish(newsObject.getId());
+        postInfoService.publish(newsObject.getId());
     }
 
     private void updateNewsObjectWithPostId(Post post, NewsObject newsObject) {
@@ -53,9 +54,9 @@ public class PostsService {
     }
 
     private Long savePostInfo(Post post) {
-        com.j0rsa.caricyno.db.models.Post postInfo = new com.j0rsa.caricyno.db.models.Post();
-        postInfo.setIntegrationId(post.getId());
-        com.j0rsa.caricyno.db.models.Post savedInfo = postService.save(postInfo);
+        PostInfo postInfoInfo = new PostInfo();
+        postInfoInfo.setIntegrationId(post.getId());
+        PostInfo savedInfo = postInfoService.save(postInfoInfo);
         return savedInfo.getId();
     }
 }

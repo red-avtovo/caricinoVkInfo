@@ -1,7 +1,7 @@
 package com.j0rsa.caricyno.application.service;
 
-import com.j0rsa.caricyno.db.models.Post;
-import com.j0rsa.caricyno.db.service.PostService;
+import com.j0rsa.caricyno.db.models.PostInfo;
+import com.j0rsa.caricyno.db.service.PostInfoService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,21 +14,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class PostServiceTest {
+public class PostInfoServiceTest {
     @Autowired
-    private PostService postService;
+    private PostInfoService postInfoService;
 
     @Test
     public void testSavePost() {
         // given
-        Post post = new Post();
-        post.setIntegrationId(1);
+        PostInfo postInfo = new PostInfo();
+        postInfo.setIntegrationId(1);
 
         // when
-        Post savedPost = postService.save(post);
+        PostInfo savedPostInfo = postInfoService.save(postInfo);
 
         // then
-        assertThat(savedPost.getId()).isNotNull();
+        assertThat(savedPostInfo.getId()).isNotNull();
     }
 
     @Test
@@ -37,7 +37,7 @@ public class PostServiceTest {
         Integer notSavedPostIntegrationId = 1;
 
         // when
-        boolean posted = postService.isPosted(notSavedPostIntegrationId);
+        boolean posted = postInfoService.isPosted(notSavedPostIntegrationId);
 
         // then
         assertThat(posted).isFalse();
@@ -50,7 +50,7 @@ public class PostServiceTest {
         savePost(integrationId);
 
         // when
-        boolean posted = postService.isPosted(integrationId);
+        boolean posted = postInfoService.isPosted(integrationId);
 
         // then
         assertThat(posted).isTrue();
@@ -60,11 +60,11 @@ public class PostServiceTest {
     public void whenPostIsPublishedThenPosted() {
         // given
         Integer integrationId = 1;
-        Post savedPost = savePost(integrationId);
-        postService.publish(savedPost.getId());
+        PostInfo savedPostInfo = savePost(integrationId);
+        postInfoService.publish(savedPostInfo.getId());
 
         // when
-        boolean posted = postService.isPosted(integrationId);
+        boolean posted = postInfoService.isPosted(integrationId);
 
         // then
         assertThat(posted).isTrue();
@@ -77,15 +77,15 @@ public class PostServiceTest {
         savePost(integrationId);
 
         // when
-        boolean posted = postService.isPosted(integrationId);
+        boolean posted = postInfoService.isPosted(integrationId);
 
         // then
         assertThat(posted).isFalse();
     }
 
-    private Post savePost(Integer integrationId) {
-        Post post = new Post();
-        post.setIntegrationId(integrationId);
-        return postService.save(post);
+    private PostInfo savePost(Integer integrationId) {
+        PostInfo postInfo = new PostInfo();
+        postInfo.setIntegrationId(integrationId);
+        return postInfoService.save(postInfo);
     }
 }

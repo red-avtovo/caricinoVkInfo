@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "post")
 @Data
-public class Post {
+public class PostInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
