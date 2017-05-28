@@ -12,6 +12,8 @@ class PostBox extends React.Component {
         this.state = {post: props.post, modal: false, successModal: false, fullText: false, newsPost: {}};
         this.ignoreRecord = this.ignoreRecord.bind(this);
         this.openModal = this.openModal.bind(this);
+        this.openModalForNewPost = this.openModalForNewPost.bind(this);
+        this.openModalForPost = this.openModalForPost.bind(this);
         this.closeModal = this.closeModal.bind(this);
         this.toggleFullText = this.toggleFullText.bind(this);
         this.handleTitleChange = this.handleTitleChange.bind(this);
@@ -27,7 +29,6 @@ class PostBox extends React.Component {
     }
 
     ignoreRecord() {
-        console.log("QQQ");
         client({
             method: 'POST',
             path: '/posts/ignore',
@@ -40,18 +41,33 @@ class PostBox extends React.Component {
         });
     }
 
+    openModalForNewPost() {
+        this.openModalForPost({
+            method: 'GET',
+            path: '/posts/new',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+    }
+
     openModal() {
-        client({
+        this.openModalForPost({
             method: 'POST',
             path: '/posts/create',
             entity: this.state.post,
             headers: {
                 'Content-Type': 'application/json'
             }
-        }).done(response => {
-            this.setState({newsPost: response.entity})
-            this.setState({modal: true})
-        });
+        })
+    }
+
+    openModalForPost(request) {
+        client(request)
+            .done(response => {
+                this.setState({newsPost: response.entity})
+                this.setState({modal: true})
+            });
     }
 
     closeModal() {
@@ -114,6 +130,11 @@ class PostBox extends React.Component {
     render() {
         return (
             <div>
+                <div>
+                    <Button bsStyle="primary" bsSize="small" className="pull-right" onClick={this.openModalForNewPost}>Create
+                        new post
+                    </Button>
+                </div>
                 <Col xs={6} md={4}>
                     <Thumbnail className="postCard">
                         <ButtonToolbar>

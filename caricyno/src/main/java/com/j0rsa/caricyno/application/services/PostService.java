@@ -2,7 +2,6 @@ package com.j0rsa.caricyno.application.services;
 
 import com.j0rsa.caricyno.application.Post;
 import com.j0rsa.caricyno.db.models.PostInfo;
-import com.j0rsa.caricyno.db.models.PostInfoBuilder;
 import com.j0rsa.caricyno.db.service.PostInfoService;
 import com.j0rsa.caricyno.website.producer.NewsObject;
 import com.vk.api.sdk.objects.wall.WallpostFull;
@@ -66,14 +65,15 @@ public class PostService {
     }
 
     private void enrichNewNewsObject(NewsObject newsObject) {
-        PostInfoBuilder aPostInfo = aPostInfo().withDefaultIntegrationId();
-        Long postId = savePostInfo(aPostInfo);
+        Long postId = savePostInfo();
         newsObject.setId(postId);
     }
 
-    private Long savePostInfo(PostInfoBuilder aPostInfo) {
-        PostInfo postInfo = aPostInfo.build();
-        PostInfo savedInfo = postInfoService.saveOrUpdate(postInfo);
+    private Long savePostInfo() {
+        PostInfo postInfo = aPostInfo()
+                .withDefaultIntegrationId()
+                .build();
+        PostInfo savedInfo = postInfoService.save(postInfo);
         return savedInfo.getId();
     }
 
