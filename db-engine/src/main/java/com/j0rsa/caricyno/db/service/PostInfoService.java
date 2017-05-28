@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import static com.j0rsa.caricyno.db.models.PostInfoBuilder.aPostInfo;
+
 @Service
 public class PostInfoService {
     private final PostInfoDao postInfoDao;
@@ -37,9 +39,19 @@ public class PostInfoService {
         return saveOrUpdate(postInfo);
     }
 
-    public void ignore(Integer integrationId) {
-        PostInfo postInfo = postInfoDao.findByIntegrationId(integrationId);
+    public void ignore(Long id) {
+        PostInfo postInfo = postInfoDao.findOne(id);
         postInfo.setIsIgnored(true);
         saveOrUpdate(postInfo);
+    }
+
+    public PostInfo findPostOrCreateNew(Integer integrationId) {
+        Optional<PostInfo> postInfoOptional = findPostInfo(integrationId);
+        return postInfoOptional.orElse(aPostInfoWithIntegrationId(integrationId));
+    }
+
+    private PostInfo aPostInfoWithIntegrationId(Integer integrationId) {
+        PostInfo postInfo = aPostInfo().withIntegrationId(integrationId).build();
+        return saveOrUpdate(postInfo);
     }
 }

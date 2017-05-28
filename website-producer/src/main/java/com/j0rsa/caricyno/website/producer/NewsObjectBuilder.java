@@ -23,6 +23,7 @@ public class NewsObjectBuilder {
     private List<String> tags = new ArrayList<>();
     private ArticleRights visibility;
     private ArticleRights commentsRights;
+
     private NewsObjectBuilder() {
 
     }
@@ -82,6 +83,11 @@ public class NewsObjectBuilder {
 
     public NewsObjectBuilder withHtmlText(String text) {
         this.htmlText = String.format(TEMPLATE, text);
+        return this;
+    }
+
+    public NewsObjectBuilder withId(Long id) {
+        this.id = id;
         return this;
     }
 }

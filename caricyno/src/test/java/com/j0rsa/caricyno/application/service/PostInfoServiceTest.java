@@ -105,20 +105,21 @@ public class PostInfoServiceTest {
     public void whenPostIsSavedAndPublishedAndIgnoredThenIgnored() {
         // given
         Integer integrationId = 1;
-        saveAndPublish(integrationId);
-        postInfoService.ignore(integrationId);
+        PostInfo postInfo = saveAndPublish(integrationId);
+        postInfoService.ignore(postInfo.getId());
 
         // when
-        Optional<PostInfo> postInfo = postInfoService.findPostInfo(integrationId);
+        Optional<PostInfo> foundPostInfo = postInfoService.findPostInfo(integrationId);
 
         // then
-        assertThat(postInfo).isPresent();
-        assertThat(postInfo.get().isIgnored()).isTrue();
+        assertThat(foundPostInfo).isPresent();
+        assertThat(foundPostInfo.get().isIgnored()).isTrue();
     }
 
-    private void saveAndPublish(Integer integrationId) {
+    private PostInfo saveAndPublish(Integer integrationId) {
         PostInfo savedPostInfo = savePost(integrationId);
         postInfoService.publish(savedPostInfo.getId());
+        return savedPostInfo;
     }
 
     private PostInfo savePost(Integer integrationId) {

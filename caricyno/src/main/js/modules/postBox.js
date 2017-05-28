@@ -10,6 +10,7 @@ class PostBox extends React.Component {
     constructor(props) {
         super(props);
         this.state = {post: props.post, modal: false, successModal: false, fullText: false, newsPost: {}};
+        this.ignoreRecord = this.ignoreRecord.bind(this);
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
         this.toggleFullText = this.toggleFullText.bind(this);
@@ -23,6 +24,20 @@ class PostBox extends React.Component {
         this.handleCommentsRightsChange = this.handleCommentsRightsChange.bind(this);
         this.submitNewsPost = this.submitNewsPost.bind(this);
 
+    }
+
+    ignoreRecord() {
+        console.log("QQQ");
+        client({
+            method: 'POST',
+            path: '/posts/ignore',
+            entity: this.state.post,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).done(response => {
+            this.state.post.isIgnored = true;
+        });
     }
 
     openModal() {
@@ -88,7 +103,7 @@ class PostBox extends React.Component {
                 'Content-Type': 'application/json'
             }
         }).done(response => {
-            if(response.status.code == 200) {
+            if (response.status.code == 200) {
                 this.setState({modal: false, successModal: true});
             } else {
                 this.setState({errorModal: true})
@@ -102,7 +117,7 @@ class PostBox extends React.Component {
                 <Col xs={6} md={4}>
                     <Thumbnail className="postCard">
                         <ButtonToolbar>
-                            <Button bsStyle="danger" bsSize="small" className="pull-right">Ignore</Button>
+                            <Button bsStyle="danger" bsSize="small" className="pull-right" onClick={this.ignoreRecord}>Ignore</Button>
                             <Button bsStyle="primary" bsSize="small" className="pull-right" onClick={this.openModal}>Create
                                 news
                                 post</Button>&nbsp;

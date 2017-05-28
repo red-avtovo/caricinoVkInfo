@@ -12,7 +12,6 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.j0rsa.caricyno.db.models.PostInfoBuilder.aPostInfo;
 import static com.j0rsa.caricyno.website.producer.NewsObjectBuilder.aNewsObject;
@@ -31,23 +30,22 @@ public class PostService {
     public List<Post> convertToPost(List<WallpostFull> wallposts) {
         List<Post> posts = Lists.newArrayList();
         for (WallpostFull wallpost : wallposts) {
+            PostInfo postInfo = postInfoService.findPostOrCreateNew(wallpost.getId());
             Post post = conversionService.convert(wallpost, Post.class);
-            enrichWithPostInfo(post);
+            enrichWithPostInfo(post, postInfo);
             posts.add(post);
         }
         return posts;
     }
 
-    private void enrichWithPostInfo(Post post) {
-        Optional<PostInfo> postInfo = postInfoService.findPostInfo(post.getId());
-        post.setIsPosted(isPosted(postInfo));
-        post.setIsIgnored(isIgnored(postInfo));
+    private void enrichWithPostInfo(Post post, PostInfo postInfo) {
+        post.setId(postInfo.getId());
+        post.setIsPosted(postInfo.isPosted());
+        post.setIsIgnored(postInfo.isIgnored());
     }
 
     public NewsObject createPost(Post post) {
-        NewsObject newsObject = conversionService.convert(post, NewsObject.class);
-        enrichIntegratedNewsObject(post.getId(), newsObject);
-        return newsObject;
+        return conversionService.convert(post, NewsObject.class);
     }
 
     public void postWasPublished(NewsObject newsObject) {
@@ -68,14 +66,7 @@ public class PostService {
     }
 
     private void enrichNewNewsObject(NewsObject newsObject) {
-        updateNewsObjectWithPostId(aPostInfo().withDefaultIntegrationId(), newsObject);
-    }
-
-    private void enrichIntegratedNewsObject(Integer integrationId, NewsObject newsObject) {
-        updateNewsObjectWithPostId(aPostInfo().withIntegrationId(integrationId), newsObject);
-    }
-
-    private void updateNewsObjectWithPostId(PostInfoBuilder aPostInfo, NewsObject newsObject) {
+        PostInfoBuilder aPostInfo = aPostInfo().withDefaultIntegrationId();
         Long postId = savePostInfo(aPostInfo);
         newsObject.setId(postId);
     }
@@ -84,14 +75,6 @@ public class PostService {
         PostInfo postInfo = aPostInfo.build();
         PostInfo savedInfo = postInfoService.saveOrUpdate(postInfo);
         return savedInfo.getId();
-    }
-
-    private Boolean isPosted(Optional<PostInfo> postInfo) {
-        return postInfo.map(PostInfo::isPosted).orElse(false);
-    }
-
-    private Boolean isIgnored(Optional<PostInfo> postInfo) {
-        return postInfo.map(PostInfo::isPosted).orElse(false);
     }
 
     public void ignore(Post post) {

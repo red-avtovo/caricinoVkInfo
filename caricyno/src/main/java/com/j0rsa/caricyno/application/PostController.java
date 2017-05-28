@@ -54,7 +54,7 @@ public class PostController {
     }
 
     @RequestMapping(value = "posts/ignore", method = RequestMethod.POST)
-    public void save(Post post) {
+    public void ignore(@RequestBody Post post) {
         postService.ignore(post);
     }
 

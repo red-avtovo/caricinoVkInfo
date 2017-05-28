@@ -15,7 +15,6 @@ public class WallFullPostToPostConverter implements Converter<WallpostFull, Post
     @Override
     public Post convert(WallpostFull wallpostFull) {
         Post post = new Post();
-        post.setId(wallpostFull.getId());
         post.setTitle(getTitle(wallpostFull));
         post.setText(wrapLinks(postText(wallpostFull)));
         post.setAuthor(wallpostFull.getOwnerId().toString());

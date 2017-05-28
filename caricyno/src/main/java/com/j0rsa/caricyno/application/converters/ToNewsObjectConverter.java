@@ -13,6 +13,7 @@ public class ToNewsObjectConverter implements Converter<Post, NewsObject> {
     @Override
     public NewsObject convert(Post post) {
         return aNewsObject()
+                .withId(post.getId())
                 .withDefaultTags()
                 .withDefaultCategory()
                 .withDefaultVisibility()
