@@ -9,12 +9,16 @@ class PostBox extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {post: props.post, modal: false, successModal: false, fullText: false, newsPost: {}};
+        this.state = {
+            post: props.post,
+            modalOpened: false,
+            fullText: false,
+            newsPost: {}
+        };
+
         this.ignoreRecord = this.ignoreRecord.bind(this);
         this.openModal = this.openModal.bind(this);
-        this.openModalForNewPost = this.openModalForNewPost.bind(this);
-        this.openModalForPost = this.openModalForPost.bind(this);
-        this.toggleFullText = this.toggleFullText.bind(this);
+        // this.closeModal = this.closeModal.bind(this);
     }
 
     ignoreRecord() {
@@ -30,18 +34,8 @@ class PostBox extends React.Component {
         });
     }
 
-    openModalForNewPost() {
-        this.openModalForPost({
-            method: 'GET',
-            path: '/posts/new',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-    }
-
     openModal() {
-        this.openModalForPost({
+        client({
             method: 'POST',
             path: '/posts/create',
             entity: this.state.post,
@@ -49,22 +43,17 @@ class PostBox extends React.Component {
                 'Content-Type': 'application/json'
             }
         })
-    }
-
-    openModalForPost(request) {
-        client(request)
             .done(response => {
-
-               return <PostModal
-                    newsPost={response.entity}
-                    modal={true}
-                />
+                this.setState({
+                    newsPost: response.entity,
+                    modalOpened: true
+                });
             });
     }
 
-    toggleFullText() {
-        this.setState({fullText: !this.state.fullText})
-    }
+    // closeModal() {
+    //     this.setState({modalOpened: false})
+    // }
 
     render() {
         return (
@@ -86,7 +75,7 @@ class PostBox extends React.Component {
                             <Label bsStyle="info">{this.state.post.author}</Label>
                         </p>
 
-                        <Button onClick={this.toggleFullText}>
+                        <Button onClick={() => this.setState({fullText: !this.state.fullText}) }>
                             Toggle full text
                         </Button>
                         <Collapse in={this.state.fullText}>
@@ -95,6 +84,7 @@ class PostBox extends React.Component {
                         </Collapse>
                     </Thumbnail>
                 </Col>
+                <PostModal newsPost={this.state.newsPost} opened={this.state.modalOpened}/>
             </div>
         )
     }

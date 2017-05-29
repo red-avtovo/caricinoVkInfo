@@ -28,7 +28,7 @@ class PostTable extends React.Component {
             if (post.isIgnored && !this.props.showIgnored) {
                 return;
             }
-            elements.push(<PostBox post={post}/>);
+            elements.push(<PostBox key={post.id} post={post}/>);
         });
 
         return (

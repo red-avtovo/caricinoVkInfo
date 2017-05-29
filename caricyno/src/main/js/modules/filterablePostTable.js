@@ -16,10 +16,11 @@ class FilterablePostTable extends React.Component {
     render() {
         return (
             <div>
-                <FilterBar
-                    showIgnored={this.state.showIgnored}
-                />
+                {/*<FilterBar*/}
+                    {/*showIgnored={this.state.showIgnored}*/}
+                {/*/>*/}
                 <PostTable
+                    key = "postTable"
                     showIgnored={this.state.showIgnored}
                 />
             </div>
