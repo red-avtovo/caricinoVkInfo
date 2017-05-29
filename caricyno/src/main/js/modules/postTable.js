@@ -16,8 +16,9 @@ class PostTable extends React.Component {
 
     render() {
         var rows = [];
-        this.state.postsPromise.then(function (result) {
-            this.state.posts.forEach((post) => {
+        this.state.postsPromise.then(function (response) {
+            var posts = response.entity;
+            posts.forEach((post) => {
                 if (post.isIgnored && !this.props.showIgnored) {
                     return;
                 }
