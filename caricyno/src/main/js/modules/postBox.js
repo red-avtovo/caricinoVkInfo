@@ -1,9 +1,8 @@
 'use strict';
 
-const React = require('react');
-const {Modal, Button, Col, Thumbnail, Label, Collapse, ButtonToolbar, FormGroup, ControlLabel, FormControl, Checkbox} = require('react-bootstrap');
-const client = require('../client');
-import update from "react-addons-update";
+import React from "react";
+import {Button, ButtonToolbar, Col, Collapse, Label, Thumbnail} from "react-bootstrap";
+import client from "../client";
 import PostModal from "./postModal.js";
 
 class PostBox extends React.Component {
@@ -55,6 +54,7 @@ class PostBox extends React.Component {
     openModalForPost(request) {
         client(request)
             .done(response => {
+
                return <PostModal
                     newsPost={response.entity}
                     modal={true}

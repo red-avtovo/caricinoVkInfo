@@ -1,17 +1,15 @@
 'use strict';
 
-const React = require('react');
-const {Modal, Button, Col, Thumbnail, Label, Collapse, ButtonToolbar, FormGroup, ControlLabel, FormControl, Checkbox} = require('react-bootstrap');
-const client = require('../client');
-import PostTable from "./postTable.js";
-import FilterBar from "./filterBar.js";
+import React from "react";
+import PostTable from "./postTable";
+import FilterBar from "./filterBar";
 
 class FilterablePostTable extends React.Component {
+
     constructor(props) {
         super(props);
         this.state = {
-            postsPromise: props.postsPromise,
-            showIgnored: false
+            showIgnored: props.showIgnored || false
         };
     }
 
@@ -22,7 +20,7 @@ class FilterablePostTable extends React.Component {
                     showIgnored={this.state.showIgnored}
                 />
                 <PostTable
-                    posts={this.state.postsPromise}
+                    showIgnored={this.state.showIgnored}
                 />
             </div>
         );

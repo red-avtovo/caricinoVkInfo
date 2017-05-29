@@ -1,9 +1,8 @@
 'use strict';
 
-const React = require('react');
-const {Modal, Button, Col, Thumbnail, Label, Collapse, ButtonToolbar, FormGroup, ControlLabel, FormControl, Checkbox} = require('react-bootstrap');
-const client = require('../client');
-import update from "react-addons-update";
+import React from 'react';
+import {Modal, Button, Col, Thumbnail, Label, Collapse, ButtonToolbar, FormGroup, ControlLabel, FormControl, Checkbox} from 'react-bootstrap';
+import client from '../client';
 
 class FilterBar extends React.Component {
     render() {
