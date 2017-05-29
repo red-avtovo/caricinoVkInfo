@@ -2,23 +2,21 @@
 
 import React from "react";
 import client from "../client";
-import EmptyPostModal from "./emptyPostModal"
+import NewsModal from "./newsModule";
 
-class PostModal extends EmptyPostModal {
+class EmptyPostModal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             opened: props.opened !== 'undefined' ? props.opened : true,
-            post: props.post,
             newsPost: {}
         };
     }
 
     componentDidMount() {
         client({
-            method: 'POST',
-            path: '/posts/create',
-            entity: this.state.post,
+            method: 'GET',
+            path: '/posts/new',
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -30,6 +28,12 @@ class PostModal extends EmptyPostModal {
             });
 
     }
+
+    render() {
+        return (
+            <NewsModal newsPost={this.state.newsPost} opened={this.state.opened}/>
+        )
+    }
 }
 
-export default PostModal;
+export default EmptyPostModal;

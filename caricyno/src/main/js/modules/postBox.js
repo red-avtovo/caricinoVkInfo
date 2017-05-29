@@ -13,12 +13,9 @@ class PostBox extends React.Component {
             post: props.post,
             modalOpened: false,
             fullText: false,
-            newsPost: {}
         };
 
         this.ignoreRecord = this.ignoreRecord.bind(this);
-        this.openModal = this.openModal.bind(this);
-        // this.closeModal = this.closeModal.bind(this);
     }
 
     ignoreRecord() {
@@ -34,27 +31,6 @@ class PostBox extends React.Component {
         });
     }
 
-    openModal() {
-        client({
-            method: 'POST',
-            path: '/posts/create',
-            entity: this.state.post,
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .done(response => {
-                this.setState({
-                    newsPost: response.entity,
-                    modalOpened: true
-                });
-            });
-    }
-
-    // closeModal() {
-    //     this.setState({modalOpened: false})
-    // }
-
     render() {
         return (
             <div>
@@ -62,7 +38,7 @@ class PostBox extends React.Component {
                     <Thumbnail className="postCard">
                         <ButtonToolbar>
                             <Button bsStyle="danger" bsSize="small" className="pull-right" onClick={this.ignoreRecord}>Ignore</Button>
-                            <Button bsStyle="primary" bsSize="small" className="pull-right" onClick={this.openModal}>Create
+                            <Button bsStyle="primary" bsSize="small" className="pull-right" onClick={() => this.setState({openModal: true})}>Create
                                 news
                                 post</Button>&nbsp;
                         </ButtonToolbar>
@@ -84,7 +60,7 @@ class PostBox extends React.Component {
                         </Collapse>
                     </Thumbnail>
                 </Col>
-                <PostModal newsPost={this.state.newsPost} opened={this.state.modalOpened}/>
+                <PostModal post={this.state.post} opened={this.state.modalOpened}/>
             </div>
         )
     }
