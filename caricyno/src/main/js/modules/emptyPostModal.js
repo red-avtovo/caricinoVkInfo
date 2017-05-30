@@ -2,7 +2,7 @@
 
 import React from "react";
 import client from "../client";
-import NewsModal from "./newsModule";
+import NewsModal from "./newsModal";
 
 class EmptyPostModal extends React.Component {
     constructor(props) {

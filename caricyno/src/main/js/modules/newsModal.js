@@ -2,6 +2,8 @@
 
 import React from "react";
 import {Button, Checkbox, ControlLabel, FormControl, FormGroup, Modal} from "react-bootstrap";
+import client from "../client";
+import update from "react-addons-update";
 
 class NewsModal extends React.Component {
     constructor(props) {
@@ -63,7 +65,7 @@ class NewsModal extends React.Component {
                                     rows={4}
                                     value={this.state.newsPost.title || ""}
                                     placeholder="Enter Title"
-                                    onChange={() => this.setState({newsPost: update(this.state.newsPost, {title: {$set: e.target.value}})})}
+                                    onChange={(e) => this.setState({newsPost: update(this.state.newsPost, {title: {$set: e.target.value}})})}
                                 />
                             </FormGroup>
                             <FormGroup>
@@ -72,7 +74,7 @@ class NewsModal extends React.Component {
                                     type="text"
                                     value={this.state.newsPost.category || ""}
                                     placeholder="Enter Category"
-                                    onChange={() => this.setState({newsPost: update(this.state.newsPost, {category: {$set: e.target.value}})})}
+                                    onChange={(e) => this.setState({newsPost: update(this.state.newsPost, {category: {$set: e.target.value}})})}
                                 />
                             </FormGroup>
                             <FormGroup>
@@ -81,7 +83,7 @@ class NewsModal extends React.Component {
                                     type="text"
                                     value={this.state.newsPost.mainPhoto || ""}
                                     placeholder="Enter URL"
-                                    onChange={() => this.setState({newsPost: update(this.state.newsPost, {mainPhoto: {$set: e.target.value}})})}
+                                    onChange={(e) => this.setState({newsPost: update(this.state.newsPost, {mainPhoto: {$set: e.target.value}})})}
                                 />
                             </FormGroup>
                             <FormGroup>
@@ -91,13 +93,13 @@ class NewsModal extends React.Component {
                                     rows={20}
                                     value={this.state.newsPost.htmlText || ""}
                                     placeholder="Enter Text"
-                                    onChange={() => this.setState({newsPost: update(this.state.newsPost, {htmlText: {$set: e.target.value}})})}
+                                    onChange={(e) => this.setState({newsPost: update(this.state.newsPost, {htmlText: {$set: e.target.value}})})}
                                 />
                             </FormGroup>
                             <FormGroup>
                                 <Checkbox
                                     checked={!!this.state.newsPost.visibleInSearchEngines}
-                                    onChange={() => this.setState({newsPost: update(this.state.newsPost, {visibleInSearchEngines: {$set: e.target.checked}})})}
+                                    onChange={(e) => this.setState({newsPost: update(this.state.newsPost, {visibleInSearchEngines: {$set: e.target.checked}})})}
                                 >Visible in search</Checkbox>
                             </FormGroup>
                             <FormGroup>
@@ -106,7 +108,7 @@ class NewsModal extends React.Component {
                                     type="text"
                                     value={this.state.newsPost.tags || ""}
                                     placeholder="Enter Tags. Comma separated"
-                                    onChange={() => this.setState({newsPost: update(this.state.newsPost, {tags: {$set: e.target.value}})})}
+                                    onChange={(e) => this.setState({newsPost: update(this.state.newsPost, {tags: {$set: e.target.value}})})}
                                 />
                             </FormGroup>
                             <FormGroup>
@@ -115,7 +117,7 @@ class NewsModal extends React.Component {
                                     type="text"
                                     value={this.state.newsPost.visibility || ""}
                                     placeholder="Enter visibility"
-                                    onChange={() => this.setState({newsPost: update(this.state.newsPost, {visibility: {$set: e.target.value}})})}
+                                    onChange={(e) => this.setState({newsPost: update(this.state.newsPost, {visibility: {$set: e.target.value}})})}
                                 />
                             </FormGroup>
                             <FormGroup>
@@ -124,7 +126,7 @@ class NewsModal extends React.Component {
                                     type="text"
                                     value={this.state.newsPost.commentsRights || ""}
                                     placeholder="Enter comment rights"
-                                    onChange={() => this.setState({newsPost: update(this.state.newsPost, {commentsRights: {$set: e.target.value}})})}
+                                    onChange={(e) => this.setState({newsPost: update(this.state.newsPost, {commentsRights: {$set: e.target.value}})})}
                                 />
                             </FormGroup>
                         </form>
