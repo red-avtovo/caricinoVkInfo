@@ -7,19 +7,23 @@ class NewsModal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            opened: props.opened !== 'undefined' ? props.opened : true,
-            newsPost: props.newsPost
+            opened: false,
+            newsPost: {}
         };
 
-        this.closeModal = this.closeModal.bind(this);
+        this.close = this.close.bind(this);
+        this.open = this.open.bind(this);
         this.submitNewsPost = this.submitNewsPost.bind(this);
     }
 
-    closeModal() {
+    close() {
         this.setState({opened: false})
     }
 
-
+    open(newsPost) {
+        this.setState({newsPost: newsPost});
+        this.setState({opened: true});
+    }
 
     submitNewsPost() {
         client({
@@ -42,15 +46,11 @@ class NewsModal extends React.Component {
         });
     }
 
-    closeModal() {
-        console.log("Close!!!");
-    }
-
-
     render() {
+
         return (
             <div>
-                <Modal show={this.state.opened} onHide={this.closeModal}>
+                <Modal show={this.state.opened} onHide={this.close}>
                     <Modal.Header closeButton>
                         <Modal.Title>Create news post</Modal.Title>
                     </Modal.Header>
@@ -130,7 +130,7 @@ class NewsModal extends React.Component {
                         </form>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button onClick={this.closeModal}>Close</Button>
+                        <Button onClick={this.close}>Close</Button>
                         <Button bsStyle="primary" onClick={this.submitNewsPost}>Submit</Button>
                     </Modal.Footer>
                 </Modal>

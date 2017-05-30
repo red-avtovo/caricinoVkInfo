@@ -10,16 +10,6 @@ class App extends React.Component {
         super(props);
     }
 
-    openModalForNewPost() {
-        // this.openModalForPost({
-        //     method: 'GET',
-        //     path: '/posts/new',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     }
-        // })
-    }
-
     render() {
         return (
             <div>

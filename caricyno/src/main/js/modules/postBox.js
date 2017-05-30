@@ -1,7 +1,7 @@
 'use strict';
 
 import React from "react";
-import {Button, ButtonToolbar, Col, Collapse, Label, Thumbnail} from "react-bootstrap";
+import {Button, ButtonToolbar, Col, Collapse, Label, Thumbnail, Glyphicon} from "react-bootstrap";
 import client from "../client";
 import PostModal from "./postModal.js";
 
@@ -37,10 +37,9 @@ class PostBox extends React.Component {
                 <Col xs={6} md={4}>
                     <Thumbnail className="postCard">
                         <ButtonToolbar>
-                            <Button bsStyle="danger" bsSize="small" className="pull-right" onClick={this.ignoreRecord}>Ignore</Button>
-                            <Button bsStyle="primary" bsSize="small" className="pull-right" onClick={() => this.setState({openModal: true})}>Create
-                                news
-                                post</Button>&nbsp;
+                            <Button bsStyle="danger" bsSize="small" className="pull-right" onClick={this.ignoreRecord}><Glyphicon glyph="trash" /></Button>
+                            <Button bsStyle="primary" bsSize="small" className="pull-right" onClick={() => this.refs.modal.open(this.state.post)}>Create
+                                news post</Button>
                         </ButtonToolbar>
                         <div className="titleContainer">
                             <div className="ellipsis">
@@ -60,7 +59,7 @@ class PostBox extends React.Component {
                         </Collapse>
                     </Thumbnail>
                 </Col>
-                <PostModal post={this.state.post} opened={this.state.modalOpened}/>
+                <PostModal ref="modal"/>
             </div>
         )
     }

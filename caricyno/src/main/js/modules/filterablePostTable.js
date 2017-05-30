@@ -3,6 +3,8 @@
 import React from "react";
 import PostTable from "./postTable";
 import FilterBar from "./filterBar";
+import EmptyPostModal from "./emptyPostModal";
+import {Button} from "react-bootstrap";
 
 class FilterablePostTable extends React.Component {
 
@@ -16,9 +18,12 @@ class FilterablePostTable extends React.Component {
     render() {
         return (
             <div>
-                {/*<FilterBar*/}
-                    {/*showIgnored={this.state.showIgnored}*/}
-                {/*/>*/}
+                <FilterBar
+                    showIgnored={this.state.showIgnored}
+                />
+                <Button bsStyle="primary" bsSize="small" onClick={() => this.refs.modal.open()}>Create news post</Button>
+                <p/>
+                <EmptyPostModal ref="modal"/>
                 <PostTable
                     key = "postTable"
                     showIgnored={this.state.showIgnored}

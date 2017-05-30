@@ -7,13 +7,12 @@ import NewsModal from "./newsModule";
 class EmptyPostModal extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            opened: props.opened !== 'undefined' ? props.opened : true,
-            newsPost: {}
-        };
+        this.state = {};
+        this.open =this.open.bind(this);
+        this.close =this.close.bind(this);
     }
 
-    componentDidMount() {
+    open() {
         client({
             method: 'GET',
             path: '/posts/new',
@@ -21,17 +20,18 @@ class EmptyPostModal extends React.Component {
                 'Content-Type': 'application/json'
             }
         })
-            .done(response => {
-                this.setState({
-                    newsPost: response.entity,
-                });
-            });
+        .done(response => {
+            this.refs.modal.open(response.entity);
+        });
+    }
 
+    close() {
+        this.refs.modal.close();
     }
 
     render() {
         return (
-            <NewsModal newsPost={this.state.newsPost} opened={this.state.opened}/>
+            <NewsModal ref="modal"/>
         )
     }
 }

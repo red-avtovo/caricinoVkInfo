@@ -7,28 +7,22 @@ import EmptyPostModal from "./emptyPostModal"
 class PostModal extends EmptyPostModal {
     constructor(props) {
         super(props);
-        this.state = {
-            opened: props.opened !== 'undefined' ? props.opened : true,
-            post: props.post,
-            newsPost: {}
-        };
+        this.state = {};
+        this.open =this.open.bind(this);
     }
 
-    componentDidMount() {
+    open(post) {
         client({
             method: 'POST',
             path: '/posts/create',
-            entity: this.state.post,
+            entity: post,
             headers: {
                 'Content-Type': 'application/json'
             }
         })
             .done(response => {
-                this.setState({
-                    newsPost: response.entity,
-                });
+                this.refs.modal.open(response.entity);
             });
-
     }
 }
 
