@@ -13,6 +13,13 @@ class FilterablePostTable extends React.Component {
         this.state = {
             showIgnored: props.showIgnored || false
         };
+        this.handleIgnoredInput = this.handleIgnoredInput.bind(this);
+    }
+
+    handleIgnoredInput(showIgnored) {
+        this.setState({
+            showIgnored: showIgnored
+        })
     }
 
     render() {
@@ -20,12 +27,14 @@ class FilterablePostTable extends React.Component {
             <div>
                 <FilterBar
                     showIgnored={this.state.showIgnored}
+                    onIgnoredInputChange={this.handleIgnoredInput}
                 />
-                <Button bsStyle="primary" bsSize="small" onClick={() => this.refs.modal.open()}>Create news post</Button>
+                <Button bsStyle="primary" bsSize="small" onClick={() => this.refs.modal.open()}>Create news
+                    post</Button>
                 <p/>
                 <EmptyPostModal ref="modal"/>
                 <PostTable
-                    key = "postTable"
+                    key="postTable"
                     showIgnored={this.state.showIgnored}
                 />
             </div>

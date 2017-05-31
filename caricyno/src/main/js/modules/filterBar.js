@@ -6,14 +6,18 @@ import {Checkbox} from "react-bootstrap";
 class FilterBar extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {showIgnored: props.showIgnored};
+        this.handleIgnoredInputChange = this.handleIgnoredInputChange.bind(this);
+    }
+
+    handleIgnoredInputChange(e) {
+        this.props.onIgnoredInputChange(e.target.checked);
     }
 
     render() {
         return (
             <Checkbox
-                checked={this.state.showIgnored}
-                onChange={(e) => this.setState({showIgnored: e.target.checked})}
+                checked={this.props.showIgnored}
+                onChange={this.handleIgnoredInputChange}
             >Show ignored</Checkbox>
         );
     }
