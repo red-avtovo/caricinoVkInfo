@@ -12,6 +12,11 @@ class PostTable extends React.Component {
             posts: [],
             showIgnored: props.showIgnored || false
         };
+        this.handleIgnoredRecord = this.handleIgnoredRecord.bind(this);
+    }
+
+    handleIgnoredRecord(ignoredRecord) {
+        this.props.onIgnoredRecord(ignoredRecord);
     }
 
     componentDidMount() {
@@ -28,7 +33,11 @@ class PostTable extends React.Component {
             if (post.isIgnored && !this.props.showIgnored) {
                 return;
             }
-            elements.push(<PostBox key={post.id} post={post}/>);
+            elements.push(
+                <PostBox
+                    key={post.id} post={post}
+                    onIgnoredChange={this.handleIgnoredRecord}
+                />);
         });
 
         return (

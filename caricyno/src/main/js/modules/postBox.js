@@ -28,6 +28,7 @@ class PostBox extends React.Component {
             }
         }).done(response => {
             this.state.post.isIgnored = true;
+            this.props.onIgnoredChange(this.state.post);
         });
     }
 
@@ -37,8 +38,10 @@ class PostBox extends React.Component {
                 <Col xs={6} md={4}>
                     <Thumbnail className="postCard">
                         <ButtonToolbar>
-                            <Button bsStyle="danger" bsSize="small" className="pull-right" onClick={this.ignoreRecord}><Glyphicon glyph="trash" /></Button>
-                            <Button bsStyle="primary" bsSize="small" className="pull-right" onClick={() => this.refs.modal.open(this.state.post)}>Create
+                            <Button bsStyle="danger" bsSize="small" className="pull-right"
+                                    onClick={this.ignoreRecord}><Glyphicon glyph="trash"/></Button>
+                            <Button bsStyle="primary" bsSize="small" className="pull-right"
+                                    onClick={() => this.refs.modal.open(this.state.post)}>Create
                                 news post</Button>
                         </ButtonToolbar>
                         <div className="titleContainer">

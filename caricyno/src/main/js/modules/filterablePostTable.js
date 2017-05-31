@@ -14,11 +14,18 @@ class FilterablePostTable extends React.Component {
             showIgnored: props.showIgnored || false
         };
         this.handleIgnoredInput = this.handleIgnoredInput.bind(this);
+        this.handleIgnored = this.handleIgnored.bind(this);
     }
 
     handleIgnoredInput(showIgnored) {
         this.setState({
             showIgnored: showIgnored
+        })
+    }
+
+    handleIgnored(ignored) {
+        this.setState({
+            ignored: ignored
         })
     }
 
@@ -36,6 +43,7 @@ class FilterablePostTable extends React.Component {
                 <PostTable
                     key="postTable"
                     showIgnored={this.state.showIgnored}
+                    onIgnoredRecord={this.handleIgnored}
                 />
             </div>
         );
