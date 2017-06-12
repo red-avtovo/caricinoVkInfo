@@ -16,7 +16,7 @@ class PostBox extends React.Component {
         };
 
         this.ignoreRecord = this.ignoreRecord.bind(this);
-        this.handleModalPublishedRecord = this.handleModalPublishedRecord.bind(this);
+        this.handleModalPosted = this.handleModalPosted.bind(this);
     }
 
     ignoreRecord() {
@@ -33,8 +33,9 @@ class PostBox extends React.Component {
         });
     }
 
-    handleModalPublishedRecord(publishedRecord) {
-        this.props.onPublishedChange(publishedRecord);
+    handleModalPosted() {
+        this.state.post.isPosted = true;
+        this.props.onPostedRecord();
     }
 
     render() {
@@ -68,7 +69,7 @@ class PostBox extends React.Component {
                     </Thumbnail>
                 </Col>
                 <PostModal ref="modal"
-                           onModalPublishedChange = {this.handleModalPublishedRecord}/>
+                           onModalPosted = {this.handleModalPosted}/>
             </div>
         )
     }

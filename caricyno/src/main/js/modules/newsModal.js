@@ -64,6 +64,7 @@ export default class NewsModal extends React.Component {
                     opened: false,
                     successModal: true
                 });
+                this.props.onNewsModalPosted(this.state.newsPost);
             } else {
                 this.setState({errorModal: true});
             }

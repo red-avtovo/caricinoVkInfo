@@ -10,6 +10,7 @@ class EmptyPostModal extends React.Component {
         this.state = {};
         this.open =this.open.bind(this);
         this.close =this.close.bind(this);
+        this.handleModalPostedChange =this.handleModalPostedChange.bind(this);
     }
 
     open() {
@@ -29,9 +30,13 @@ class EmptyPostModal extends React.Component {
         this.refs.modal.close();
     }
 
+    handleModalPostedChange() {
+        this.props.onModalPosted();
+    }
+
     render() {
         return (
-            <NewsModal ref="modal"/>
+            <NewsModal ref="modal" onNewsModalPosted = {this.handleModalPostedChange} />
         )
     }
 }

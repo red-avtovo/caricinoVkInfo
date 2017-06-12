@@ -12,12 +12,12 @@ class FilterablePostTable extends React.Component {
         super(props);
         this.state = {
             showIgnored: props.showIgnored || false,
-            showPublished: props.showPublished || false
+            showPosted: props.showPosted || false
         };
         this.handleIgnoredInput = this.handleIgnoredInput.bind(this);
         this.handleIgnored = this.handleIgnored.bind(this);
-        this.handlePublishedInput = this.handlePublishedInput.bind(this);
-        this.handlePublished = this.handlePublished.bind(this);
+        this.handlePostedInput = this.handlePostedInput.bind(this);
+        this.handlePosted = this.handlePosted.bind(this);
     }
 
     handleIgnoredInput(showIgnored) {
@@ -26,9 +26,9 @@ class FilterablePostTable extends React.Component {
         })
     }
 
-    handlePublishedInput(showPublished) {
+    handlePostedInput(showPosted) {
         this.setState({
-            showPublished: showPublished
+            showPosted: showPosted
         })
     }
 
@@ -38,9 +38,9 @@ class FilterablePostTable extends React.Component {
         })
     }
 
-    handlePublished(published) {
+    handlePosted(posted) {
         this.setState({
-            published: published
+            posted: posted
         })
     }
 
@@ -49,9 +49,9 @@ class FilterablePostTable extends React.Component {
             <div>
                 <FilterBar
                     showIgnored={this.state.showIgnored}
-                    showPublished={this.state.showPublished}
+                    showPosted={this.state.showPosted}
                     onIgnoredInputChange={this.handleIgnoredInput}
-                    onPublishedInputChange={this.handlePublishedInput}
+                    onPostedInputChange={this.handlePostedInput}
                 />
                 <Button bsStyle="primary" bsSize="small" onClick={() => this.refs.modal.open()}>Create news
                     post</Button>
@@ -60,9 +60,9 @@ class FilterablePostTable extends React.Component {
                 <PostTable
                     key="postTable"
                     showIgnored={this.state.showIgnored}
-                    showPublished={this.state.showPublished}
+                    showPosted={this.state.showPosted}
                     onIgnoredRecord={this.handleIgnored}
-                    onPublishedRecord={this.handlePublished}
+                    onPostedRecord={this.handlePosted}
                 />
             </div>
         );

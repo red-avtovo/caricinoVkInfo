@@ -11,18 +11,18 @@ class PostTable extends React.Component {
         this.state = {
             posts: [],
             showIgnored: props.showIgnored || false,
-            showPublished: props.showPublished || false
+            showPosted: props.showPosted || false
         };
         this.handleIgnoredRecord = this.handleIgnoredRecord.bind(this);
-        this.handlePublishedRecord = this.handlePublishedRecord.bind(this);
+        this.handlePostedRecord = this.handlePostedRecord.bind(this);
     }
 
     handleIgnoredRecord(ignoredRecord) {
         this.props.onIgnoredRecord(ignoredRecord);
     }
 
-    handlePublishedRecord(publishedRecord) {
-        this.props.onPublishedRecord(publishedRecord);
+    handlePostedRecord() {
+        this.props.onPostedRecord();
     }
 
     componentDidMount() {
@@ -36,14 +36,15 @@ class PostTable extends React.Component {
         let elements = [];
 
         this.state.posts.forEach((post) => {
-            if (post.isIgnored && !this.props.showIgnored) {
+            if ((post.isIgnored && !this.props.showIgnored)
+                || (post.isPosted && !this.props.showPosted)) {
                 return;
             }
             elements.push(
                 <PostBox
                     key={post.id} post={post}
                     onIgnoredChange={this.handleIgnoredRecord}
-                    onPublishedChange={this.handlePublishedRecord}
+                    onPostedRecord={this.handlePostedRecord}
                 />);
         });
 
