@@ -12,7 +12,7 @@ public class NewsObjectBuilder {
     private static List<String> POST_TAGS = Arrays.asList("царицыно", "новости", "жкцарицыно", "достройтецарицыно", "дольщики");
     private static String TEMPLATE = "<p><span style=\"font-size: 12pt; font-family: 'times new roman', times;\">%s</span></p>";
     private static Category DEFAULT_CATEGORY = Category.OTHER;
-    private static ArticleRights DEFAULT_ARTICLES_RIGHTS = ArticleRights.OWNER;
+    private static ArticleRights DEFAULT_ARTICLES_RIGHTS = ArticleRights.EVERYONE;
     private static ArticleRights DEFAULT_COMMENT_RIGHTS = ArticleRights.EVERYONE;
     private Long id;
     private String title;
@@ -53,7 +53,7 @@ public class NewsObjectBuilder {
     }
 
     public NewsObjectBuilder withDefaultVisibleInSearchEngines() {
-        this.visibleInSearchEngines = false;
+        this.visibleInSearchEngines = true;
         return this;
     }
 
