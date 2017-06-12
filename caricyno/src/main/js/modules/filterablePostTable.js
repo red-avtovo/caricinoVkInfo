@@ -18,6 +18,7 @@ class FilterablePostTable extends React.Component {
         this.handleIgnored = this.handleIgnored.bind(this);
         this.handlePostedInput = this.handlePostedInput.bind(this);
         this.handlePosted = this.handlePosted.bind(this);
+        this.handleEmptyPostModal = this.handleEmptyPostModal.bind(this);
     }
 
     handleIgnoredInput(showIgnored) {
@@ -44,6 +45,10 @@ class FilterablePostTable extends React.Component {
         })
     }
 
+    handleEmptyPostModal() {
+        console.log("handleEmptyPostModal");
+    }
+
     render() {
         return (
             <div>
@@ -56,7 +61,7 @@ class FilterablePostTable extends React.Component {
                 <Button bsStyle="primary" bsSize="small" onClick={() => this.refs.modal.open()}>Create news
                     post</Button>
                 <p/>
-                <EmptyPostModal ref="modal"/>
+                <EmptyPostModal ref="modal" onModalPosted = {this.handleEmptyPostModal}/>
                 <PostTable
                     key="postTable"
                     showIgnored={this.state.showIgnored}
