@@ -7,18 +7,29 @@ class FilterBar extends React.Component {
     constructor(props) {
         super(props);
         this.handleIgnoredInputChange = this.handleIgnoredInputChange.bind(this);
+        this.handlePublishedInputChange = this.handlePublishedInputChange.bind(this);
     }
 
     handleIgnoredInputChange(e) {
         this.props.onIgnoredInputChange(e.target.checked);
     }
 
+    handlePublishedInputChange(e) {
+        this.props.onPublishedInputChange(e.target.checked);
+    }
+
     render() {
         return (
-            <Checkbox
-                checked={this.props.showIgnored}
-                onChange={this.handleIgnoredInputChange}
-            >Show ignored</Checkbox>
+            <div>
+                <Checkbox
+                    checked={this.props.showIgnored}
+                    onChange={this.handleIgnoredInputChange}
+                >Show ignored</Checkbox>
+                <Checkbox
+                    checked={this.props.showPublished}
+                    onChange={this.handlePublishedInputChange}
+                >Show published</Checkbox>
+            </div>
         );
     }
 

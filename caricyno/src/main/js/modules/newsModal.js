@@ -66,7 +66,9 @@ export default class NewsModal extends React.Component {
                     }, successModal: true
                 });
             } else {
-                this.setState({errorModal: true})
+                this.setState({errorModal: true});
+                this.state.post.isPublished = true;
+                this.props.onModalPublishedChange(this.state.post);
             }
         });
     }
