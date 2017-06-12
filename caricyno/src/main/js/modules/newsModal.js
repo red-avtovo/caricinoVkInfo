@@ -1,17 +1,36 @@
 'use strict';
 
 import React from "react";
-import {Button, Checkbox, ControlLabel, FormControl, FormGroup, Modal} from "react-bootstrap";
+import {Button, Checkbox, ControlLabel, FormControl, FormGroup, Modal, Collapse} from "react-bootstrap";
 import client from "../client";
 import update from "react-addons-update";
+import autoBind from "class-autobind";
+import type {EditorValue} from "react-rte";
+import RichTextEditor, {createEmptyValue, createValueFromString} from "react-rte";
 
-class NewsModal extends React.Component {
+type Props = {};
+type State = {
+    value: EditorValue,
+    opened: Boolean,
+    newsPost: {},
+    showHtmlSource: Boolean
+};
+
+export default class NewsModal extends React.Component {
+    props: Props;
+    state: State;
+
     constructor(props) {
         super(props);
+        this.props = props;
+        autoBind(this);
         this.state = {
+            value: createEmptyValue(),
             opened: false,
-            newsPost: {}
+            newsPost: {},
+            showHtmlSource: false
         };
+
 
         this.close = this.close.bind(this);
         this.open = this.open.bind(this);
@@ -23,8 +42,12 @@ class NewsModal extends React.Component {
     }
 
     open(newsPost) {
-        this.setState({newsPost: newsPost});
-        this.setState({opened: true});
+        let oldValue = this.state.value;
+        this.setState({
+            newsPost: newsPost,
+            value: oldValue.setContentFromString(newsPost.htmlText, 'html'),
+            opened: true
+        });
     }
 
     submitNewsPost() {
@@ -49,7 +72,7 @@ class NewsModal extends React.Component {
     }
 
     render() {
-
+        let {value} = this.state;
         return (
             <div>
                 <Modal show={this.state.opened} onHide={this.close}>
@@ -88,13 +111,34 @@ class NewsModal extends React.Component {
                             </FormGroup>
                             <FormGroup>
                                 <ControlLabel>HTML Text</ControlLabel>
-                                <FormControl
-                                    componentClass="textarea"
-                                    rows={20}
-                                    value={this.state.newsPost.htmlText || ""}
-                                    placeholder="Enter Text"
-                                    onChange={(e) => this.setState({newsPost: update(this.state.newsPost, {htmlText: {$set: e.target.value}})})}
+                                <RichTextEditor
+                                    value={value}
+                                    onChange={(value) => this.setState(
+                                        {
+                                            newsPost: update(this.state.newsPost, {htmlText: {$set: value.toString('html')}}),
+                                            value: value
+                                        }
+                                        )}
+                                    className="react-rte"
+                                    placeholder="Write news post"
+                                    toolbarClassName="toolbar"
+                                    editorClassName="editor"
                                 />
+                                <Button onClick={() => this.setState({showHtmlSource: !this.state.showHtmlSource}) }>
+                                    Toggle html code
+                                </Button>
+                                <Collapse in={this.state.showHtmlSource}>
+                                    <FormControl
+                                        componentClass="textarea"
+                                        rows={20}
+                                        value={this.state.newsPost.htmlText || ""}
+                                        placeholder="Enter Text"
+                                        onChange={(e) => this.setState({
+                                            newsPost: update(this.state.newsPost, {htmlText: {$set: e.target.value}}),
+                                            value: value.setContentFromString(e.target.value, 'html')
+                                        })}
+                                    />
+                                </Collapse>
                             </FormGroup>
                             <FormGroup>
                                 <Checkbox
@@ -140,5 +184,3 @@ class NewsModal extends React.Component {
         );
     }
 }
-
-export default NewsModal;
