@@ -1,11 +1,13 @@
 package com.j0rsa.caricyno.application;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import org.assertj.core.util.Lists;
 
 import java.util.List;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Post {
     private Long id;
     private String title;

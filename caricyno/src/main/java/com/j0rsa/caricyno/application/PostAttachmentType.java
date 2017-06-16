@@ -1,5 +1,7 @@
 package com.j0rsa.caricyno.application;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Arrays;
 
 public enum PostAttachmentType {
@@ -18,6 +20,7 @@ public enum PostAttachmentType {
         this.name = name;
     }
 
+    @JsonIgnore
     public static PostAttachmentType fromString(String name) {
         return Arrays.stream(PostAttachmentType.values())
                 .filter(type -> type.name.equalsIgnoreCase(name))

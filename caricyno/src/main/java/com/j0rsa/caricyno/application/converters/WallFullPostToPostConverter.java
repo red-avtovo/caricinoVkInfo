@@ -35,8 +35,10 @@ public class WallFullPostToPostConverter implements Converter<WallpostFull, Post
     }
 
     private void addAttachments(WallpostFull wallpostFull, Post post) {
-        for (WallpostAttachment attachment : wallpostFull.getAttachments()) {
-            post.add(conversionService.convert(attachment, PostAttachment.class));
+        if (wallpostFull.getAttachments() != null) {
+            for (WallpostAttachment attachment : wallpostFull.getAttachments()) {
+                post.add(conversionService.convert(attachment, PostAttachment.class));
+            }
         }
     }
 
