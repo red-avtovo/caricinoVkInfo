@@ -3,20 +3,26 @@ package com.j0rsa.caricyno.website.producer;
 import com.j0rsa.caricyno.website.producer.utils.SSLExecutor;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.Consts;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MimeTypeUtils;
+import org.springframework.util.StreamUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
+import java.nio.charset.Charset;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -36,7 +42,7 @@ public class NewsPublisher {
 
     public static final ContentType TEXT_PLAIN = ContentType.create("text/plain", Consts.UTF_8);
     private Cookie authCookie;
-    private Function<URL, Boolean> isEmptyOrNull = value -> value == null || value.toString().isEmpty();
+    private Function<String, String> emptyOrValue = value -> value == null ? "" : value;
 
     @Autowired
     public NewsPublisher(WebsiteProperties properties, AuthorizationModule authorizationModule) {
@@ -57,11 +63,26 @@ public class NewsPublisher {
         Executor executor = SSLExecutor.getExecutor();
         final BasicCookieStore cookieStore = new BasicCookieStore();
         cookieStore.addCookie(authCookie);
-        return executor.use(cookieStore)
+        final HttpResponse httpResponse = executor.use(cookieStore)
                 .execute(request)
-                .returnResponse()
-                .getStatusLine()
-                .getStatusCode() == 200;
+                .returnResponse();
+        final String responseContent = StreamUtils.copyToString(httpResponse.getEntity().getContent(), Charset.defaultCharset());
+
+        final String debugProperty = System.getProperty("com.j0rsa.caricyno.website.producer.NewsPublisher.DEBUG");
+        if (emptyOrValue.apply(debugProperty).equals("true")) {
+            System.out.println(String.format(
+                    "-------------------------------\n\n" +
+                            "%s" +
+                            "\n\n-----------------------------",
+                    responseContent));
+        }
+        return doesntContainErrorsInHtml(responseContent);
+    }
+
+    private boolean doesntContainErrorsInHtml(String responseContent) {
+        return responseContent.contains("Article has been added.")
+                &&
+                !responseContent.contains("form-errors");
     }
 
     private void authorizeIfNotAuthorized() throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
@@ -71,36 +92,67 @@ public class NewsPublisher {
     }
 
     private HttpEntity makeFormParams(NewsObject newsObject) {
-        byte[] nullImage = new byte[0];
         final MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
         builder.addTextBody("title", newsObject.getTitle(), TEXT_PLAIN)
                 .addTextBody("category_id", String.valueOf(newsObject.getCategory().getCategoryId()), TEXT_PLAIN)
                 .addTextBody("MAX_FILE_SIZE", "268435456", TEXT_PLAIN)
-                .addBinaryBody("art_photo",
-                        isEmptyOrNull.apply(newsObject.getMainPhoto()) ? nullImage :
-                                downloadImageToTmp(newsObject.getMainPhoto()),
-                        ContentType.APPLICATION_OCTET_STREAM,
-                        isEmptyOrNull.apply(newsObject.getMainPhoto()) ? "" : "tempFile")
                 .addTextBody("description", newsObject.getHtmlText(), TEXT_PLAIN)
                 .addTextBody("search", newsObject.isVisibleInSearchEngines() ? "true" : "", TEXT_PLAIN)
                 .addTextBody("tags_info", String.join(", ", newsObject.getTags()), TEXT_PLAIN)
                 .addTextBody("auth_view", newsObject.getVisibility().toString().toLowerCase(), TEXT_PLAIN)
                 .addTextBody("auth_comment", newsObject.getCommentsRights().toString().toLowerCase(), TEXT_PLAIN);
+
+        if (newsObject.getMainPhoto() != null) {
+            final ContentType contentType = getContentType(newsObject.getMainPhoto());
+            final String extension = contentType.getMimeType().split("/")[1];
+            final FileBody fileBody = new FileBody(
+                    downloadImageToTmp(newsObject.getMainPhoto()),
+                    contentType,
+                    "tempFile." + extension);
+            builder.addPart("art_photo", fileBody);
+        } else {
+            builder.addBinaryBody("art_photo",
+                    new byte[0],
+                    ContentType.APPLICATION_OCTET_STREAM,
+                    "");
+        }
+
         return builder.build();
     }
 
-    private byte[] downloadImageToTmp(URL mainPhoto) {
-        try {
-            final File tempFile = new File("/tmp/" + UUID.randomUUID());
-            FileUtils.copyURLToFile(mainPhoto, tempFile);
-            final byte[] imageBytes = Files.readAllBytes(tempFile.toPath());
-            if (!tempFile.delete()) {
-                tempFile.deleteOnExit();
+    private ContentType getContentType(URL mainPhoto) {
+        if (mainPhoto != null) {
+            try {
+                final Header[] contentTypeHeader = Request.Head(String.valueOf(mainPhoto))
+                        .execute()
+                        .returnResponse()
+                        .getHeaders("Content-Type");
+                final String contentType = contentTypeHeader[0].getValue();
+                return ContentType.create(contentType, Consts.UTF_8);
+            } catch (IOException e) {
+                return ContentType.create(MimeTypeUtils.IMAGE_JPEG.toString());
             }
-            return imageBytes;
-        } catch (IOException e) {
-            e.printStackTrace();
+        } else {
+            return ContentType.create(MimeTypeUtils.IMAGE_JPEG.toString());
         }
-        return new byte[0];
+    }
+
+    private File downloadImageToTmp(URL mainPhoto) {
+        final File tempFile = new File("/tmp/" + UUID.randomUUID());
+        if (mainPhoto != null) {
+            try {
+                FileUtils.copyURLToFile(mainPhoto, tempFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                tempFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return tempFile;
     }
 }
