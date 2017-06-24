@@ -1,5 +1,6 @@
 package com.j0rsa.caricyno.application;
 
+import com.j0rsa.caricyno.application.post.Post;
 import com.j0rsa.caricyno.website.producer.NewsObject;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;

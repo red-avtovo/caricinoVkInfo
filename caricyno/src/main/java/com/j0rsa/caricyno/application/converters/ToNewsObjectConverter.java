@@ -1,6 +1,6 @@
 package com.j0rsa.caricyno.application.converters;
 
-import com.j0rsa.caricyno.application.Post;
+import com.j0rsa.caricyno.application.post.Post;
 import com.j0rsa.caricyno.website.producer.NewsObject;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;

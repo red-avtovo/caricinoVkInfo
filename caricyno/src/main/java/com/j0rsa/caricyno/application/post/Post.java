@@ -1,6 +1,7 @@
-package com.j0rsa.caricyno.application;
+package com.j0rsa.caricyno.application.post;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.j0rsa.caricyno.application.post.attachment.PostAttachment;
 import lombok.Data;
 import org.assertj.core.util.Lists;
 

@@ -1,7 +1,7 @@
 package com.j0rsa.caricyno.application.converters;
 
-import com.j0rsa.caricyno.application.PostAttachment;
-import com.j0rsa.caricyno.application.PostAttachmentType;
+import com.j0rsa.caricyno.application.post.attachment.PostAttachment;
+import com.j0rsa.caricyno.application.post.attachment.PostAttachmentType;
 import com.vk.api.sdk.objects.wall.WallpostAttachment;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ public class ToPostAttachmentConverter implements Converter<WallpostAttachment, 
     }
 
     private PostAttachmentType extractType(WallpostAttachment wallpostAttachment) {
-        return PostAttachmentType.fromString(wallpostAttachment.getType().name());
+        return PostAttachmentType.from(wallpostAttachment.getType());
     }
 
     private String extractLink(WallpostAttachment wallpostAttachment) {

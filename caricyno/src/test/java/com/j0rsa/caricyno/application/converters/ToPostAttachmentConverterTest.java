@@ -1,6 +1,6 @@
 package com.j0rsa.caricyno.application.converters;
 
-import com.j0rsa.caricyno.application.PostAttachment;
+import com.j0rsa.caricyno.application.post.attachment.PostAttachment;
 import com.vk.api.sdk.objects.base.Link;
 import com.vk.api.sdk.objects.wall.WallpostAttachment;
 import com.vk.api.sdk.objects.wall.WallpostAttachmentType;
@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.lang.reflect.Field;
 
-import static com.j0rsa.caricyno.application.PostAttachmentType.LINK;
+import static com.j0rsa.caricyno.application.post.attachment.PostAttachmentType.LINK;
 import static org.assertj.core.api.Assertions.assertThat;
 
 

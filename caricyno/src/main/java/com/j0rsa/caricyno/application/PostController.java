@@ -1,5 +1,6 @@
 package com.j0rsa.caricyno.application;
 
+import com.j0rsa.caricyno.application.post.Post;
 import com.j0rsa.caricyno.application.services.PostService;
 import com.j0rsa.caricyno.vk.NewsService;
 import com.j0rsa.caricyno.website.producer.NewsObject;
