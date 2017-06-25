@@ -28,15 +28,19 @@ public class WallNews extends News {
     }
 
     private WallRequest.WallRequestBuilder ownersWallPosts() {
+        return wallPosts()
+                .filter(OWNER);
+    }
+
+    private WallRequest.WallRequestBuilder wallPosts() {
         return WallRequest.builder()
                 .service(service(vkProperties))
-                .owner(vkProperties.getGroup())
-                .filter(OWNER);
+                .owner(vkProperties.getGroup());
     }
 
     @Override
     public GetResponse findLastPosts(Integer count) throws ClientException, ApiException {
-        return ownersWallPosts()
+        return wallPosts()
                 .count(count)
                 .build()
                 .execute();
