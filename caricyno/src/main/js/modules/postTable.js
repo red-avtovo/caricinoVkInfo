@@ -26,7 +26,7 @@ class PostTable extends React.Component {
     }
 
     componentDidMount() {
-        client({method: 'GET', path: '/posts?count=5'})
+        client({method: 'GET', path: '/posts?count=25'})
             .done(response => {
                 this.setState({posts: response.entity});
             });

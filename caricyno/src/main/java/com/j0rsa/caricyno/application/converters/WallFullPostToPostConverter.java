@@ -1,6 +1,7 @@
 package com.j0rsa.caricyno.application.converters;
 
 import com.j0rsa.caricyno.application.post.Post;
+import com.j0rsa.caricyno.application.post.attachment.PostAttachment;
 import com.vk.api.sdk.objects.wall.WallpostAttachment;
 import com.vk.api.sdk.objects.wall.WallpostFull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,10 @@ public class WallFullPostToPostConverter implements Converter<WallpostFull, Post
     private void addAttachments(WallpostFull wallpostFull, Post post) {
         if (wallpostFull.getAttachments() != null) {
             for (WallpostAttachment attachment : wallpostFull.getAttachments()) {
-                post.add(parse(attachment));
+                PostAttachment postAttachment = parse(attachment);
+                if (postAttachment != null) {
+                    post.add(postAttachment);
+                }
             }
         }
     }

@@ -31,6 +31,9 @@ public class VkVideo extends Attachment {
     }
 
     private String getLink(VideoFiles files) {
-        return files.getExternal();
+        if (files != null) {
+            return files.getExternal();
+        }
+        return null;
     }
 }

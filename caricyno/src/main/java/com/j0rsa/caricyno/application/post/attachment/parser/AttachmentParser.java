@@ -13,7 +13,8 @@ public class AttachmentParser {
     static final AttachmentParser LINK_TYPE = typeMatch(WallpostAttachmentType.LINK, new VkVideo());
 
     private static final List<AttachmentParser> typeMatches = Lists.newArrayList(
-            VK_VIDEO_TYPE
+            VK_VIDEO_TYPE,
+            LINK_TYPE
     );
 
     private WallpostAttachmentType vkAttachmentType;
