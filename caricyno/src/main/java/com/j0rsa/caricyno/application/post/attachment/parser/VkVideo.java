@@ -21,8 +21,21 @@ public class VkVideo extends Attachment {
     private PostAttachment createAttachment(Video video) {
         PostAttachment postAttachment = createAttachment();
         postAttachment.setLink(getLink(video.getFiles()));
-        postAttachment.setPhotoLink(video.getPhoto800());
+        postAttachment.setPhotoLink(extractPhoto(video));
         return postAttachment;
+    }
+
+    private String extractPhoto(Video video) {
+        if (isNotNull(video.getPhoto800())) {
+            return video.getPhoto800();
+        } else if (isNotNull(video.getPhoto320())) {
+            return video.getPhoto320();
+        }
+        return video.getPhoto130();
+    }
+
+    private boolean isNotNull(Object o) {
+        return o != null;
     }
 
     @Override
