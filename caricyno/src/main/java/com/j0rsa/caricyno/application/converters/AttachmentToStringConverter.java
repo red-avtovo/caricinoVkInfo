@@ -20,7 +20,7 @@ public class AttachmentToStringConverter implements Converter<PostAttachment, St
 
     private String getLink(String link) {
         if (link == null) {
-            link = "---link---";
+            link = "";
         }
         return link;
     }

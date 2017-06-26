@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ToPostAttachmentConverterTest {
+public class ToPostAttachmentParserConverterTest {
     public static final String TEST_LINK = "testLink";
 
     @Autowired

@@ -5,13 +5,17 @@ import com.j0rsa.caricyno.application.post.attachment.PostAttachmentType;
 import com.vk.api.sdk.objects.video.Video;
 import com.vk.api.sdk.objects.video.VideoFiles;
 import com.vk.api.sdk.objects.wall.WallpostAttachment;
+import org.springframework.stereotype.Service;
 
-public class VkVideo extends Attachment {
+import static com.j0rsa.caricyno.application.Utils.isNotNull;
+
+@Service
+public class VkVideo extends AttachmentParser {
 
     @Override
-    public PostAttachment getData(WallpostAttachment wallpostAttachment) {
+    public PostAttachment parse(WallpostAttachment wallpostAttachment) {
         Video video = wallpostAttachment.getVideo();
-        if (video != null) {
+        if (isNotNull(video)) {
             return createAttachment(video);
         }
 
@@ -32,10 +36,6 @@ public class VkVideo extends Attachment {
             return video.getPhoto320();
         }
         return video.getPhoto130();
-    }
-
-    private boolean isNotNull(Object o) {
-        return o != null;
     }
 
     @Override

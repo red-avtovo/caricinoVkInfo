@@ -28,6 +28,8 @@ public class WallFullPostToPostConverterTest {
                 .isEqualTo("МЫ ДОЛЖНЫ БЫТЬ на этом митинге!!!\n" +
                         "<a href='http://tass.ru/obschestvo/4265891'>http://tass.ru/obschestvo/4265891</a> численность урезали до 1,5 тыс человек, тем не менее - это отличный способ быть увиденными. Заказаны дополнительные кепки и футболки наших традиционных цветов, новые растяжки и флаги! Прорабатываются различные идеи эпатажного появления для привлечения внимания СМИ.\n" +
                         "Ждем ваших идей!");
+        assertThat(WallFullPostToPostConverter.wrapLinks("https://pp.userapi.com/c637528/v637528337/4d137/dlE0s37hJ7w.jpg"))
+                .isEqualTo("<img src='https://pp.userapi.com/c637528/v637528337/4d137/dlE0s37hJ7w.jpg' alt=''>");
 
     }
 
