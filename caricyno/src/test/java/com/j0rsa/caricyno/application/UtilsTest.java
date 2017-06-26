@@ -25,6 +25,9 @@ public class UtilsTest {
         assertThat(wrapLinks("https://pp.userapi.com/c637528/v637528337/4d137/dlE0s37hJ7w.jpg"))
                 .isEqualTo("<img src='https://pp.userapi.com/c637528/v637528337/4d137/dlE0s37hJ7w.jpg' alt=''>");
 
+        assertThat(wrapLinks("https://www.youtube.com/watch?v=sRVSKaGT4Ss"))
+                .isEqualTo("<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/sRVSKaGT4Ss\" frameborder=\"0\" allowfullscreen></iframe>");
+
     }
 
 }
