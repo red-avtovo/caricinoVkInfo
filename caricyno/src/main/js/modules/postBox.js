@@ -57,9 +57,10 @@ class PostBox extends React.Component {
                         </div>
                         <p>
                             <Label bsStyle="info">{this.state.post.author}</Label>
-                            <Label bsStyle="info" onClick={
-                                () => window.open("https://www.youtube.com/watch?v=l4iZtDBYkZA", "_blank")
-                            }>I'm Mr. Linkseeks ,click at me!!!</Label>
+                            &nbsp;&nbsp;&nbsp;
+                            <Label style={{cursor: "pointer"}} onClick={
+                                () => window.open(this.state.post.link, "_blank")
+                            }>Open Original Post</Label>
                         </p>
 
                         <Button onClick={() => this.setState({fullText: !this.state.fullText}) }>
