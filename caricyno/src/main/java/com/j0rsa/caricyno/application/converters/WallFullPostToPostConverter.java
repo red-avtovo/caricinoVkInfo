@@ -4,6 +4,7 @@ import com.j0rsa.caricyno.application.post.Post;
 import com.j0rsa.caricyno.application.post.attachment.PostAttachment;
 import com.j0rsa.caricyno.application.post.attachment.parser.AttachmentParser;
 import com.j0rsa.caricyno.application.post.attachment.parser.AttachmentParserResolver;
+import com.j0rsa.caricyno.vk.VkProperties;
 import com.vk.api.sdk.objects.wall.WallpostAttachment;
 import com.vk.api.sdk.objects.wall.WallpostFull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,24 +14,29 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+import static com.j0rsa.caricyno.application.Utils.isNotNull;
 import static com.j0rsa.caricyno.application.Utils.wrapLinks;
 
 
 @Component
 public class WallFullPostToPostConverter implements Converter<WallpostFull, Post> {
     private static final String END = "<br />";
+    private static final String TEMPLATE = "%s%s_%s";
     private final ConversionService conversionService;
     private final AttachmentParserResolver attachmentParserResolver;
+    private final VkProperties vkProperties;
 
     @Autowired
-    public WallFullPostToPostConverter(ConversionService conversionService, AttachmentParserResolver attachmentParserResolver) {
+    public WallFullPostToPostConverter(ConversionService conversionService, AttachmentParserResolver attachmentParserResolver, VkProperties vkProperties) {
         this.conversionService = conversionService;
         this.attachmentParserResolver = attachmentParserResolver;
+        this.vkProperties = vkProperties;
     }
 
     @Override
     public Post convert(WallpostFull wallpostFull) {
         Post post = new Post();
+        post.setLink(getLink(wallpostFull));
         post.setTitle(getTitle(wallpostFull));
         post.setText(postText(wallpostFull));
         post.setAuthor(wallpostFull.getOwnerId().toString());
@@ -41,17 +47,25 @@ public class WallFullPostToPostConverter implements Converter<WallpostFull, Post
         return post;
     }
 
+    private String getLink(WallpostFull wallpostFull) {
+        return String.format(TEMPLATE, vkProperties.getLink(), wallpostFull.getOwnerId(), wallpostFull.getId());
+    }
+
     private void addAttachments(WallpostFull wallpostFull, Post post) {
-        if (wallpostFull.getAttachments() != null) {
+        if (isNotNull(wallpostFull.getAttachments())) {
             for (WallpostAttachment attachment : wallpostFull.getAttachments()) {
-                Optional<AttachmentParser> attachmentParserOptional = attachmentParserResolver.resolve(attachment);
-                if (attachmentParserOptional.isPresent()) {
-                    PostAttachment postAttachment = attachmentParserOptional.get().parse(attachment);
-                    if (postAttachment != null) {
-                        post.add(postAttachment);
-                        post.setText(allTextWithAttachmentTExtAtTheEnd(post, postAttachment));
-                    }
-                }
+                parseAttachment(post, attachment);
+            }
+        }
+    }
+
+    private void parseAttachment(Post post, WallpostAttachment attachment) {
+        Optional<AttachmentParser> attachmentParserOptional = attachmentParserResolver.resolve(attachment);
+        if (attachmentParserOptional.isPresent()) {
+            PostAttachment postAttachment = attachmentParserOptional.get().parse(attachment);
+            if (isNotNull(postAttachment)) {
+                post.add(postAttachment);
+                post.setText(allTextWithAttachmentTExtAtTheEnd(post, postAttachment));
             }
         }
     }

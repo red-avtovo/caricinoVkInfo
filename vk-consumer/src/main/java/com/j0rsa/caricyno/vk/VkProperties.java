@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "vk")
 @Data
 public class VkProperties {
+    private String link;
     private Integer group;
     private Integer client;
     private String secret;
