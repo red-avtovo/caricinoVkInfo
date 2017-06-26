@@ -14,6 +14,7 @@ import static com.j0rsa.caricyno.application.post.attachment.parser.AttachmentPa
 @Component
 public class WallFullPostToPostConverter implements Converter<WallpostFull, Post> {
     private final ConversionService conversionService;
+    private static final String END = "<br />";
 
     @Autowired
     public WallFullPostToPostConverter(ConversionService conversionService) {
@@ -28,11 +29,12 @@ public class WallFullPostToPostConverter implements Converter<WallpostFull, Post
     public Post convert(WallpostFull wallpostFull) {
         Post post = new Post();
         post.setTitle(getTitle(wallpostFull));
-        post.setText(wrapLinks(postText(wallpostFull)));
+        post.setText(postText(wallpostFull));
         post.setAuthor(wallpostFull.getOwnerId().toString());
         post.setIsPinned(isPinned(wallpostFull));
         addAttachments(wallpostFull, post);
 
+        post.setText(wrapLinks(post.getText()));
         return post;
     }
 
@@ -42,13 +44,18 @@ public class WallFullPostToPostConverter implements Converter<WallpostFull, Post
                 PostAttachment postAttachment = parse(attachment);
                 if (postAttachment != null) {
                     post.add(postAttachment);
+                    post.setText(allTextWithAttachmentTExtAtTheEnd(post, postAttachment));
                 }
             }
         }
     }
 
+    private String allTextWithAttachmentTExtAtTheEnd(Post post, PostAttachment postAttachment) {
+        return post.getText().concat(END).concat(conversionService.convert(postAttachment, String.class));
+    }
+
     private String postText(WallpostFull wallpostFull) {
-        return wallpostFull.getText().replaceAll("\r\n", "<br />").replaceAll("\n", "<br />");
+        return wallpostFull.getText().replaceAll("\r\n", END).replaceAll("\n", END);
     }
 
     private boolean isPinned(WallpostFull wallpostFull) {
