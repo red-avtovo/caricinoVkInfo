@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+import static com.j0rsa.caricyno.application.Utils.wrapLinks;
+
 
 @Component
 public class WallFullPostToPostConverter implements Converter<WallpostFull, Post> {
@@ -24,11 +26,6 @@ public class WallFullPostToPostConverter implements Converter<WallpostFull, Post
     public WallFullPostToPostConverter(ConversionService conversionService, AttachmentParserResolver attachmentParserResolver) {
         this.conversionService = conversionService;
         this.attachmentParserResolver = attachmentParserResolver;
-    }
-
-    public static String wrapLinks(String text) {
-        return text
-                .replaceAll("([http|ftp|https]+://[^<> ]+)", "<a href='$1'>$1</a>");
     }
 
     @Override
