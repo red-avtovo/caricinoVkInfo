@@ -20,6 +20,7 @@ public class AttachmentParserResolver {
         typeMatches.put(WallpostAttachmentType.VIDEO, PostAttachmentType.VK_VIDEO);
         typeMatches.put(WallpostAttachmentType.LINK, PostAttachmentType.LINK);
         typeMatches.put(WallpostAttachmentType.PHOTO, PostAttachmentType.VK_PHOTO);
+        typeMatches.put(WallpostAttachmentType.ALBUM, PostAttachmentType.VK_PHOTO_ALBUM);
     }
 
     private final List<AttachmentParser> attachmentParsers;

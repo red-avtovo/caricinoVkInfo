@@ -14,12 +14,11 @@ import static com.j0rsa.caricyno.application.post.attachment.PostAttachments.pos
 public class VkPhoto extends AttachmentParser {
     @Override
     public PostAttachments parse(WallpostAttachment wallpostAttachment) {
-        return postAttachments(postAttachment(wallpostAttachment));
+        return postAttachments(postAttachment(wallpostAttachment.getPhoto()));
     }
 
-    private PostAttachment postAttachment(WallpostAttachment wallpostAttachment) {
+    PostAttachment postAttachment(Photo photo) {
         PostAttachment postAttachment = createAttachment();
-        Photo photo = wallpostAttachment.getPhoto();
         if (isNotNull(photo)) {
             postAttachment.setLink(getPhoto(photo));
         }
