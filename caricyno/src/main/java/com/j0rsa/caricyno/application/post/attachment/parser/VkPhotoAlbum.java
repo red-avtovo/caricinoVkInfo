@@ -36,7 +36,7 @@ public class VkPhotoAlbum extends AttachmentParser {
                 createAttachmentsFromPhotos(postAttachments, photos);
             }
         }
-        return null;
+        return postAttachments;
     }
 
     private void createAttachmentsFromPhotos(PostAttachments postAttachments, List<Photo> photos) {
