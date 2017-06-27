@@ -2,16 +2,22 @@ package com.j0rsa.caricyno.application.post.attachment.parser;
 
 import com.j0rsa.caricyno.application.post.attachment.PostAttachment;
 import com.j0rsa.caricyno.application.post.attachment.PostAttachmentType;
+import com.j0rsa.caricyno.application.post.attachment.PostAttachments;
 import com.vk.api.sdk.objects.photos.Photo;
 import com.vk.api.sdk.objects.wall.WallpostAttachment;
 import org.springframework.stereotype.Service;
 
 import static com.j0rsa.caricyno.application.Utils.isNotNull;
+import static com.j0rsa.caricyno.application.post.attachment.PostAttachments.postAttachments;
 
 @Service
 public class VkPhoto extends AttachmentParser {
     @Override
-    public PostAttachment parse(WallpostAttachment wallpostAttachment) {
+    public PostAttachments parse(WallpostAttachment wallpostAttachment) {
+        return postAttachments(postAttachment(wallpostAttachment));
+    }
+
+    private PostAttachment postAttachment(WallpostAttachment wallpostAttachment) {
         PostAttachment postAttachment = createAttachment();
         Photo photo = wallpostAttachment.getPhoto();
         if (isNotNull(photo)) {

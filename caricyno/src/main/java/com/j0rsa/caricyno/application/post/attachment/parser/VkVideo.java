@@ -2,27 +2,29 @@ package com.j0rsa.caricyno.application.post.attachment.parser;
 
 import com.j0rsa.caricyno.application.post.attachment.PostAttachment;
 import com.j0rsa.caricyno.application.post.attachment.PostAttachmentType;
+import com.j0rsa.caricyno.application.post.attachment.PostAttachments;
 import com.vk.api.sdk.objects.video.Video;
 import com.vk.api.sdk.objects.video.VideoFiles;
 import com.vk.api.sdk.objects.wall.WallpostAttachment;
 import org.springframework.stereotype.Service;
 
 import static com.j0rsa.caricyno.application.Utils.isNotNull;
+import static com.j0rsa.caricyno.application.post.attachment.PostAttachments.postAttachments;
 
 @Service
 public class VkVideo extends AttachmentParser {
 
     @Override
-    public PostAttachment parse(WallpostAttachment wallpostAttachment) {
+    public PostAttachments parse(WallpostAttachment wallpostAttachment) {
         Video video = wallpostAttachment.getVideo();
         if (isNotNull(video)) {
-            return createAttachment(video);
+            return postAttachments(attachment(video));
         }
 
         return null;
     }
 
-    private PostAttachment createAttachment(Video video) {
+    private PostAttachment attachment(Video video) {
         PostAttachment postAttachment = createAttachment();
         postAttachment.setLink(getLink(video.getFiles()));
         postAttachment.setPhotoLink(extractPhoto(video));

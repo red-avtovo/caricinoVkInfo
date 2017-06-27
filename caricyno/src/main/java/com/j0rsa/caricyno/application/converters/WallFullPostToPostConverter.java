@@ -2,6 +2,7 @@ package com.j0rsa.caricyno.application.converters;
 
 import com.j0rsa.caricyno.application.post.Post;
 import com.j0rsa.caricyno.application.post.attachment.PostAttachment;
+import com.j0rsa.caricyno.application.post.attachment.PostAttachments;
 import com.j0rsa.caricyno.application.post.attachment.parser.AttachmentParser;
 import com.j0rsa.caricyno.application.post.attachment.parser.AttachmentParserResolver;
 import com.j0rsa.caricyno.vk.VkProperties;
@@ -62,21 +63,24 @@ public class WallFullPostToPostConverter implements Converter<WallpostFull, Post
     private void parseAttachment(Post post, WallpostAttachment attachment) {
         Optional<AttachmentParser> attachmentParserOptional = attachmentParserResolver.resolve(attachment);
         if (attachmentParserOptional.isPresent()) {
-            PostAttachment postAttachment = attachmentParserOptional.get().parse(attachment);
-            if (isNotNull(postAttachment)) {
-                post.add(postAttachment);
-                post.setText(allTextWithAttachmentTExtAtTheEnd(post, postAttachment));
+            PostAttachments postAttachments = attachmentParserOptional.get().parse(attachment);
+            if (isNotNull(postAttachments)) {
+                post.setText(attachAttachmentInfo(post, postAttachments));
             }
         }
     }
 
-    private String allTextWithAttachmentTExtAtTheEnd(Post post, PostAttachment postAttachment) {
-        return getTextWithEndOrEmpty(post).concat(conversionService.convert(postAttachment, String.class));
+    private String attachAttachmentInfo(Post post, PostAttachments postAttachments) {
+        String postAttachmentText = getTextWithEndOrEmpty(post.getText());
+        for (PostAttachment postAttachment : postAttachments.getPostAttachments()) {
+            postAttachmentText = postAttachmentText.concat(getTextWithEndOrEmpty(conversionService.convert(postAttachment, String.class)));
+        }
+        return postAttachmentText;
     }
 
-    private String getTextWithEndOrEmpty(Post post) {
-        if (post.getText() != null) {
-            return post.getText().concat(END);
+    private String getTextWithEndOrEmpty(String text) {
+        if (isNotNull(text)) {
+            return text.concat(END);
         }
         return "";
     }
