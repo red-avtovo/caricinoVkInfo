@@ -40,7 +40,7 @@ public class NewsPublisher {
     private final AuthorizationModule authorizationModule;
     private final String articleAddUrl;
 
-    public static final ContentType TEXT_PLAIN = ContentType.create("text/plain", Consts.UTF_8);
+    private static final ContentType TEXT_PLAIN = ContentType.create("text/plain", Consts.UTF_8);
     private Cookie authCookie;
     private Function<String, String> emptyOrValue = value -> value == null ? "" : value;
 
@@ -98,7 +98,7 @@ public class NewsPublisher {
                 .addTextBody("category_id", String.valueOf(newsObject.getCategory().getCategoryId()), TEXT_PLAIN)
                 .addTextBody("MAX_FILE_SIZE", "268435456", TEXT_PLAIN)
                 .addTextBody("description", newsObject.getHtmlText(), TEXT_PLAIN)
-                .addTextBody("search", newsObject.isVisibleInSearchEngines() ? "true" : "", TEXT_PLAIN)
+                .addTextBody("search", newsObject.isVisibleInSearchEngines() ? "1" : "", TEXT_PLAIN)
                 .addTextBody("tags_info", String.join(", ", newsObject.getTags()), TEXT_PLAIN)
                 .addTextBody("auth_view", newsObject.getVisibility().toString().toLowerCase(), TEXT_PLAIN)
                 .addTextBody("auth_comment", newsObject.getCommentsRights().toString().toLowerCase(), TEXT_PLAIN);
