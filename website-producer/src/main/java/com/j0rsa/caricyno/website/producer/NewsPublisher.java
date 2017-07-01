@@ -124,10 +124,8 @@ public class NewsPublisher {
     private ContentType getContentType(URL mainPhoto) {
         if (mainPhoto != null) {
             try {
-                final Header[] contentTypeHeader = Request.Head(String.valueOf(mainPhoto))
-                        .execute()
-                        .returnResponse()
-                        .getHeaders("Content-Type");
+                Header[] contentTypeHeader = getContentTypeHeadHeaders(mainPhoto);
+                if (contentTypeHeader.length == 0) contentTypeHeader = getContentTypeGetHeaders(mainPhoto);
                 final String contentType = contentTypeHeader[0].getValue();
                 return ContentType.create(contentType, Consts.UTF_8);
             } catch (IOException e) {
@@ -136,6 +134,20 @@ public class NewsPublisher {
         } else {
             return ContentType.create(MimeTypeUtils.IMAGE_JPEG.toString());
         }
+    }
+
+    private Header[] getContentTypeHeadHeaders(URL mainPhoto) throws IOException {
+        return Request.Head(String.valueOf(mainPhoto))
+                .execute()
+                .returnResponse()
+                .getHeaders("Content-Type");
+    }
+
+    private Header[] getContentTypeGetHeaders(URL mainPhoto) throws IOException {
+        return Request.Get(String.valueOf(mainPhoto))
+                .execute()
+                .returnResponse()
+                .getHeaders("Content-Type");
     }
 
     private File downloadImageToTmp(URL mainPhoto) {
