@@ -7,7 +7,6 @@ import update from "react-addons-update";
 import autoBind from "class-autobind";
 import type {EditorValue} from "react-rte";
 import RichTextEditor, {createEmptyValue, createValueFromString} from "react-rte";
-import LinkPreview from 'react-native-link-preview';
 
 type Props = {};
 type State = {
@@ -62,10 +61,12 @@ export default class NewsModal extends React.Component {
             value: oldValue.setContentFromString(newsPost.htmlText, 'html'),
             opened: true
         });
-        this.loadLinksPreview();
     }
 
     submitNewsPost() {
+        let originalLink = this.state.newsPost.mainPhoto;
+        let encodedUri = encodeURIComponent(originalLink);
+        this.setState({newsPost: update(this.state.newsPost, {mainPhoto: {$set: encodedUri}})});
         client({
             method: 'POST',
             path: '/posts/save',
@@ -81,43 +82,11 @@ export default class NewsModal extends React.Component {
                 });
                 this.props.onNewsModalPosted(this.state.newsPost);
             } else {
-                this.setState({errorModal: true});
+                this.setState({errorModal: true,
+                    newsPost: update(this.state.newsPost, {mainPhoto: {$set: originalLink}})
+                });
             }
         });
-    }
-
-    getOpenGraphData(url) {
-        url = encodeURIComponent(url);
-        let path = "http://opengraph.io/api/1.1/site/"+url+"?app_id=5957a9b03252e710008fa84d";
-        console.log("request openGraph for: " + path);
-        client({
-            method: 'GET',
-            path: path,
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        }).done(response => {
-            console.log(response)
-        });
-
-    }
-
-    loadLinksPreview() {
-        return;
-        if (this.state.newsPost.htmlText) {
-            let html = document.createElement('html');
-            html.innerHTML = this.state.newsPost.htmlText;
-            let linkObjects = html.getElementsByTagName( 'a' );
-            let links = new Set();
-            for (let i = 0; i < linkObjects.length; i++) {
-                links.add(linkObjects[i].href);
-            }
-            let split = links.values().next().value.split("?")[0];
-            console.log("requesting for " + split);
-            LinkPreview.getPreview(split)
-                .then(data => console.warn(data))
-                .catch(err => console.warn(err))
-        }
     }
 
     render() {
