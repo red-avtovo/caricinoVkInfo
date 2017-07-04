@@ -1,20 +1,39 @@
 'use strict';
 
 import React from "react";
-import {Button, Checkbox, ControlLabel, FormControl, FormGroup, Modal, Collapse} from "react-bootstrap";
+import {Button, Checkbox, Collapse, ControlLabel, FormControl, FormGroup, Modal} from "react-bootstrap";
 import client from "../client";
 import update from "react-addons-update";
 import autoBind from "class-autobind";
 import type {EditorValue} from "react-rte";
 import RichTextEditor, {createEmptyValue, createValueFromString} from "react-rte";
+import LinkPreview from 'react-native-link-preview';
 
 type Props = {};
 type State = {
     value: EditorValue,
     opened: Boolean,
-    newsPost: {},
-    showHtmlSource: Boolean
+    newsPost: NewsPost,
+    showHtmlSource: Boolean,
+    linksPreview: OpenGraph
 };
+
+type NewsPost = {
+    id: String,
+    title: String,
+    category: String,
+    mainPhoto: String,
+    htmlText: String,
+    tags: String,
+    visibility: String,
+    commentsRights: String
+}
+
+type OpenGraph = {
+    title: String,
+    photo: String,
+    description: String
+}
 
 export default class NewsModal extends React.Component {
     props: Props;
@@ -30,11 +49,6 @@ export default class NewsModal extends React.Component {
             newsPost: {},
             showHtmlSource: false
         };
-
-
-        this.close = this.close.bind(this);
-        this.open = this.open.bind(this);
-        this.submitNewsPost = this.submitNewsPost.bind(this);
     }
 
     close() {
@@ -48,6 +62,7 @@ export default class NewsModal extends React.Component {
             value: oldValue.setContentFromString(newsPost.htmlText, 'html'),
             opened: true
         });
+        this.loadLinksPreview();
     }
 
     submitNewsPost() {
@@ -71,11 +86,45 @@ export default class NewsModal extends React.Component {
         });
     }
 
+    getOpenGraphData(url) {
+        url = encodeURIComponent(url);
+        let path = "http://opengraph.io/api/1.1/site/"+url+"?app_id=5957a9b03252e710008fa84d";
+        console.log("request openGraph for: " + path);
+        client({
+            method: 'GET',
+            path: path,
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        }).done(response => {
+            console.log(response)
+        });
+
+    }
+
+    loadLinksPreview() {
+        return;
+        if (this.state.newsPost.htmlText) {
+            let html = document.createElement('html');
+            html.innerHTML = this.state.newsPost.htmlText;
+            let linkObjects = html.getElementsByTagName( 'a' );
+            let links = new Set();
+            for (let i = 0; i < linkObjects.length; i++) {
+                links.add(linkObjects[i].href);
+            }
+            let split = links.values().next().value.split("?")[0];
+            console.log("requesting for " + split);
+            LinkPreview.getPreview(split)
+                .then(data => console.warn(data))
+                .catch(err => console.warn(err))
+        }
+    }
+
     render() {
         let {value} = this.state;
         return (
             <div>
-                <Modal show={this.state.opened} onHide={this.close}>
+                <Modal show={this.state.opened} onExit={this.close}>
                     <Modal.Header closeButton>
                         <Modal.Title>Create news post</Modal.Title>
                     </Modal.Header>
@@ -102,6 +151,12 @@ export default class NewsModal extends React.Component {
                             </FormGroup>
                             <FormGroup>
                                 <ControlLabel>Photo URL</ControlLabel>
+                                <p style={{
+                                    textAlign: 'center',
+                                    display: this.state.newsPost.mainPhoto ? "block" : "none"
+                                }}>
+                                    <img src={this.state.newsPost.mainPhoto} style={{width: '160px'}}/>
+                                </p>
                                 <FormControl
                                     type="text"
                                     value={this.state.newsPost.mainPhoto || ""}
