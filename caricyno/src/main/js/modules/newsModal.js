@@ -7,36 +7,11 @@ import update from "react-addons-update";
 import autoBind from "class-autobind";
 import type {EditorValue} from "react-rte";
 import RichTextEditor, {createEmptyValue, createValueFromString} from "react-rte";
+import {NewsPostObject, OpenGraphObject} from './types';
+import PropTypes from 'prop-types'
+import GraphLinksList from "./graphLinksList";
 
-type Props = {};
-type State = {
-    value: EditorValue,
-    opened: Boolean,
-    newsPost: NewsPost,
-    showHtmlSource: Boolean,
-    linksPreview: OpenGraph
-};
-
-type NewsPost = {
-    id: String,
-    title: String,
-    category: String,
-    mainPhoto: String,
-    htmlText: String,
-    tags: String,
-    visibility: String,
-    commentsRights: String
-}
-
-type OpenGraph = {
-    title: String,
-    photo: String,
-    description: String
-}
-
-export default class NewsModal extends React.Component {
-    props: Props;
-    state: State;
+class NewsModal extends React.Component {
 
     constructor(props) {
         super(props);
@@ -46,7 +21,8 @@ export default class NewsModal extends React.Component {
             value: createEmptyValue(),
             opened: false,
             newsPost: {},
-            showHtmlSource: false
+            showHtmlSource: false,
+            linksPreview: []
         };
     }
 
@@ -59,8 +35,10 @@ export default class NewsModal extends React.Component {
         this.setState({
             newsPost: newsPost,
             value: oldValue.setContentFromString(newsPost.htmlText, 'html'),
-            opened: true
+            opened: true,
+            linksPreview: []
         });
+        this.loadLinksPreview()
     }
 
     submitNewsPost() {
@@ -89,8 +67,73 @@ export default class NewsModal extends React.Component {
         });
     }
 
+    getOpenGraphData(url: String, index: number) {
+        // console.log("fetching info for: " + url);
+        let eurl = encodeURIComponent(url);
+        fetch('http://opengraph.io/api/1.1/site/'+eurl+'?app_id=595d3f470874f87264678e1b&full_render=true')
+            .then(response => response.json())
+            .then(json => json.hybridGraph)
+            .then(hybridGraph => {
+                let instance : OpenGraph = {};
+                instance.index = index;
+                instance.href = url;
+                instance.title = hybridGraph.title;
+                instance.description = hybridGraph.description;
+                instance.photo = hybridGraph.image;
+                this.setState({linksPreview: [
+                    ...this.state.linksPreview,
+                    instance
+                ]});
+                // console.log(instance);
+            })
+
+            .catch(error => console.error(error))
+
+    }
+
+    loadLinksPreview() {
+        if (this.state.newsPost.htmlText) {
+            let html = document.createElement('html');
+            html.innerHTML = this.state.newsPost.htmlText;
+            let links = new Set();
+            let linkObjects = html.getElementsByTagName('a');
+            for (let i = 0; i < linkObjects.length; i++) {
+                links.add(linkObjects[i].href);
+            }
+            [...links].forEach((link, index) => this.getOpenGraphData(link, index));
+        }
+    }
+
+    loadFromLink(index: number) {
+        let graphObject = this.state.linksPreview[index];
+        let graphHtml = NewsModal.replaceGraphHtml(this.state.newsPost.htmlText, graphObject.description);
+        this.setState({
+            newsPost: update(this.state.newsPost, {
+                title: {$set: graphObject.title},
+                mainPhoto: {$set: graphObject.photo},
+                htmlText: {$set: graphHtml}
+                }),
+            value: this.state.value.setContentFromString(graphHtml, 'html')
+        });
+    }
+
+    static replaceGraphHtml(htmlText, graphText = "") {
+        let html = document.createElement('html');
+        html.innerHTML = htmlText;
+        let body = html.getElementsByTagName("body")[0];
+        let linkObjects = body.getElementsByClassName("openGraph");
+        if (linkObjects.length)
+            linkObjects.forEach(linkObject => linkObject.remove());
+        let graphObject = document.createElement('span');
+        graphObject.className = 'openGraph';
+        graphObject.innerText = graphText;
+        body.insertBefore(graphObject, body.firstChild);
+        return body.innerHTML;
+    }
+
     render() {
-        let {value} = this.state;
+        let {value, linksPreview} = this.state;
+
         return (
             <div>
                 <Modal show={this.state.opened} onExit={this.close}>
@@ -99,6 +142,7 @@ export default class NewsModal extends React.Component {
                     </Modal.Header>
                     <Modal.Body>
                         <form>
+                            <GraphLinksList links={linksPreview} onClick={this.loadFromLink} />
                             <FormGroup>
                                 <ControlLabel>Title</ControlLabel>
                                 <FormControl
@@ -208,3 +252,19 @@ export default class NewsModal extends React.Component {
         );
     }
 }
+
+const EditorValueObject : EditorValue = {};
+NewsModal.PropTypes = {
+    props: {
+        onNewsModalPosted: PropTypes.func
+    },
+    state: {
+        value: PropTypes.instanceOf(EditorValueObject),
+        opened: PropTypes.bool.isRequired,
+        newsPost: PropTypes.instanceOf(NewsPostObject),
+        showHtmlSource: PropTypes.bool,
+        linksPreview: PropTypes.arrayOf(OpenGraphObject)
+    }
+};
+
+export default NewsModal;

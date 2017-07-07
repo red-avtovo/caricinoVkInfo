@@ -6,6 +6,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "class-autobind": "^0.1.4",
+    "prop-types": "^15.5.10",
     "react": "^15.3.2",
     "react-addons-update": "latest",
     "react-bootstrap": "latest",
