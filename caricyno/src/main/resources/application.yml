@@ -2,8 +2,6 @@ vk:
   group: -1
   client: -1
   secret: -1
-  host: https://vk.com/blank.html
-  code: 1
   token: 1
 
 website:
