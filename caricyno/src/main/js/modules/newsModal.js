@@ -93,6 +93,7 @@ class NewsModal extends React.Component {
 
     loadLinksPreview() {
         if (this.state.newsPost.htmlText) {
+            this.setState({linksPreview: []});
             let html = document.createElement('html');
             html.innerHTML = this.state.newsPost.htmlText;
             let links = new Set();
@@ -122,8 +123,11 @@ class NewsModal extends React.Component {
         html.innerHTML = htmlText;
         let body = html.getElementsByTagName("body")[0];
         let linkObjects = body.getElementsByClassName("openGraph");
-        if (linkObjects.length)
-            linkObjects.forEach(linkObject => linkObject.remove());
+        if (linkObjects.length) {
+            for (let i = 0; i < linkObjects.length; i++) {
+                linkObjects[i].remove();
+            }
+        }
         let graphObject = document.createElement('span');
         graphObject.className = 'openGraph';
         graphObject.innerText = graphText;
@@ -137,7 +141,7 @@ class NewsModal extends React.Component {
         return (
             <div>
                 <Modal show={this.state.opened} onExit={this.close}>
-                    <Modal.Header closeButton>
+                    <Modal.Header>
                         <Modal.Title>Create news post</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
@@ -194,6 +198,9 @@ class NewsModal extends React.Component {
                                 />
                                 <Button onClick={() => this.setState({showHtmlSource: !this.state.showHtmlSource}) }>
                                     Toggle html code
+                                </Button>
+                                <Button onClick={() => this.loadLinksPreview()}>
+                                    Load links preview
                                 </Button>
                                 <Collapse in={this.state.showHtmlSource}>
                                     <FormControl
