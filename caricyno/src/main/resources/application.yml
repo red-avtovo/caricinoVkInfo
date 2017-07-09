@@ -2,7 +2,9 @@ vk:
   group: -1
   client: -1
   secret: -1
-  service: -1
+  host: https://vk.com/blank.html
+  code: 1
+  token: 1
 
 website:
   domain: odnodolshiki2.ru

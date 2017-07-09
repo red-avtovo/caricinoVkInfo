@@ -14,5 +14,7 @@ public class VkProperties {
     private Integer group;
     private Integer client;
     private String secret;
-    private String service;
+    private String host;
+    private String code;
+    private String token;
 }

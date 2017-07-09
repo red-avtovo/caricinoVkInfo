@@ -10,7 +10,7 @@ public class ServiceActorData {
         serviceActor = new com.vk.api.sdk.client.actors.ServiceActor(
                 vkProperties.getClient(),
                 vkProperties.getSecret(),
-                vkProperties.getService()
+                vkProperties.getToken()
         );
     }
 
