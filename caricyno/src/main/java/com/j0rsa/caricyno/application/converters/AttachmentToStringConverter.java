@@ -6,15 +6,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AttachmentToStringConverter implements Converter<PostAttachment, String> {
-    private static String TEMPLATE = "%s %s %s";
+    private static String TEMPLATE = "%s %s";
 
     @Override
     public String convert(PostAttachment postAttachment) {
         return String.format(
                 TEMPLATE,
                 getLink(postAttachment.getLink()),
-                getLink(postAttachment.getPhotoLink()),
-                postAttachment.getType().name()
+                getLink(postAttachment.getPhotoLink())
         );
     }
 

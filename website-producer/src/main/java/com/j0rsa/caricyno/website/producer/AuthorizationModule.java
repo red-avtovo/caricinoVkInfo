@@ -1,6 +1,8 @@
 package com.j0rsa.caricyno.website.producer;
 
 import com.j0rsa.caricyno.website.producer.utils.SSLExecutor;
+import org.apache.commons.codec.net.URLCodec;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Executor;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -42,7 +45,7 @@ public class AuthorizationModule {
     private final Request authCheckRequest;
 
     @Autowired
-    public AuthorizationModule(WebsiteProperties properties) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public AuthorizationModule(WebsiteProperties properties) throws Exception {
         this.properties = properties;
         String authCheckUrl = properties.getUrl() + "/activity/notifications/update";
         String authUrl = properties.getUrl() + "/login";
@@ -52,6 +55,10 @@ public class AuthorizationModule {
                                 .add("wEMlxxkq2D", properties.getUsername())
                                 .add("password", properties.getPassword())
                                 .add("email_field", "d0VNbHh4a3EyRA==")
+                                .add("email","")
+                                .add("remember","")
+                                .add("submit","")
+                                .add("return_url","64-Lw%3D%3D")
                                 .build()
                 );
         authCheckRequest = Request.Post(authCheckUrl);
