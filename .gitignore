@@ -14,3 +14,5 @@ hs_err_pid*
 *.iml
 **/target/
 caricyno/node_modules/
+/caricyno/package-lock.json
+/caricyno/src/main/resources/static/built/
