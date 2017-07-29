@@ -38,12 +38,6 @@ jobs:
             - ~/.m2
           key: v1-dependencies-{{ checksum "pom.xml" }}
 
-workflows:
-  version: 2
-  build_and_test:
-    jobs:
-      - build
-
 deployment:
     staging:
       branch: master

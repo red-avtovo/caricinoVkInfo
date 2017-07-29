@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -jar caricyno/target/*.jar
+web: java $JAVA_OPTS -Dserver.port=$PORT -jar caricyno/target/*.jar
