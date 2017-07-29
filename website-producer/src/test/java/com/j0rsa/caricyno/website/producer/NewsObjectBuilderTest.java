@@ -2,6 +2,7 @@ package com.j0rsa.caricyno.website.producer;
 
 import com.j0rsa.caricyno.website.producer.enums.ArticleRights;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.net.URL;
@@ -15,6 +16,7 @@ import static org.junit.Assert.*;
 
 public class NewsObjectBuilderTest {
     @Test
+    @Ignore
     public void aNewsObject() throws Exception {
 
 //        System.setProperty("com.j0rsa.caricyno.website.producer.NewsPublisher.DEBUG", "true");

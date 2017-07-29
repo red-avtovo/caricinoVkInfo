@@ -1,27 +1,28 @@
 vk:
-  group: -1
-  client: -1
-  secret: -1
-  token: 1
+  link: ${vk_link}
+  group: ${vk_group}
+  client: ${vk_client}
+  secret: ${vk_secret}
+  token: ${vk_token}
 
 website:
   domain: odnodolshiki2.ru
   url: https://odnodolshiki2.ru
-  username: <user>
-  password: <pass>
+  username: ${website_user_name}
+  password: ${website_user_pass}
 
 spring:
   datasource:
-    url: <url>
-    username: <username>
-    password: <password>
+    url: ${spring_datasource_url}
+    username: ${spring_datasource_username}
+    password: ${spring_datasource_password}
     testWhileIdle: true
     validationQuery: SELECT 1
   jpa:
     show-sql: false
     hibernate:
-      ddl-auto: validate
+      ddl-auto: ${spring_jpa_hibernate_ddl_auto}
       naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL5Dialect
+        dialect: ${spring_jpa_database_platform}

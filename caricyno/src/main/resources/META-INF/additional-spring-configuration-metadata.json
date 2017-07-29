@@ -34,6 +34,11 @@
       "name": "website.password",
       "type": "java.lang.String",
       "description": "Description for website.password."
+    },
+    {
+      "name": "spring.datasource.testWhileIdle",
+      "type": "java.lang.String",
+      "description": "Description for spring.datasource.testWhileIdle."
     }
   ]
 }
