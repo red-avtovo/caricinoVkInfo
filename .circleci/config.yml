@@ -37,14 +37,15 @@ jobs:
           paths:
             - ~/.m2
           key: v1-dependencies-{{ checksum "pom.xml" }}
-  deployment:
-    staging:
-      branch: master
-      heroku:
-        appname: caricyno
 
 workflows:
   version: 2
   build_and_test:
     jobs:
       - build
+
+deployment:
+    staging:
+      branch: master
+      heroku:
+        appname: caricyno
