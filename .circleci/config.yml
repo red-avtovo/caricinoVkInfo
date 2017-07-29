@@ -45,6 +45,8 @@ jobs:
       - store_test_results:
                 path: caricyno/target/surefire-reports/
 
+      - run: bash .circleci/setup-heroku.sh
+
       - deploy:
          name: Deploy Master to Heroku
          command: |
@@ -52,3 +54,9 @@ jobs:
              git push heroku master
              heroku restart
            fi
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
