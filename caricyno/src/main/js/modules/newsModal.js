@@ -70,7 +70,10 @@ class NewsModal extends React.Component {
     getOpenGraphData(url: String, index: number) {
         // console.log("fetching info for: " + url);
         let eurl = encodeURIComponent(url);
-        fetch('http://opengraph.io/api/1.1/site/'+eurl+'?app_id=595d3f470874f87264678e1b&full_render=true')
+        //ref https://stackoverflow.com/a/43268098/2724241
+        let proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+        let openGraphUrl = 'http://opengraph.io/api/1.1/site/'+eurl+'?app_id=595d3f470874f87264678e1b&full_render=true';
+        fetch(proxyUrl + openGraphUrl)
             .then(response => response.json())
             .then(json => json.hybridGraph)
             .then(hybridGraph => {
