@@ -1,3 +1,6 @@
+application:
+  login: ${app_login}
+  password: ${app_password}
 vk:
   link: ${vk_link}
   group: ${vk_group}
